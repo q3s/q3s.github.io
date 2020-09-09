@@ -1,0 +1,24 @@
+{% capture build_number %}{{ site.github.build_revision }}{{ site.time | date: '%Y%m%d%H%M%S' }}{% endcapture %}
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#FFFFFF">
+  <link rel="icon" type="image/png" href="/assets/png/favicon64.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+  <link href="/assets/bundle.css?v={{ build_number }}" rel="stylesheet">
+  <link rel="preload" href="/assets/png/favicon64.png" as="image">
+  <link rel="manifest" href="/q3s.webmanifest">
+  <script src="/assets/check-and-redirect.js?v={{ build_number }}"></script>
+  <script type="module" src="/assets/external.js?v={{ build_number }}"></script>
+  <script type="module" src="/assets/bundle.js?v={{ build_number }}"></script>
+  <title>Q3S</title>
+</head>
+
+<body>
+  {{ content }}
+</body>
+
+</html>
