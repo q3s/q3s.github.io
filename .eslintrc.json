@@ -1,0 +1,19 @@
+{
+  "extends": "@nodutilus/eslint-config",
+  "env": {
+    "browser": true,
+    "node": false
+  },
+  "rules": {
+    "jsdoc/require-jsdoc": "off",
+    "jsdoc/require-param": "off",
+    "jsdoc/require-returns": "off"
+  },
+  "ignorePatterns": [
+    "docs/_site",
+    "docs/assets/bundle.js",
+    "docs/assets/check-and-redirect.js",
+    "docs/assets/external.js",
+    "docs/assets/offline.js"
+  ]
+}

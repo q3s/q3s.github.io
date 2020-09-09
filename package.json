@@ -1,0 +1,20 @@
+{
+  "type": "module",
+  "description": "Q3S",
+  "license": "Unlicense",
+  "repository": "github:q3s/q3s.github.io",
+  "devDependencies": {
+    "@nodutilus/eslint-config": "latest",
+    "@notml/core": "latest",
+    "@rollup/plugin-node-resolve": "latest",
+    "rollup": "latest",
+    "rollup-plugin-terser": "latest",
+    "rollup-plugin-cleanup": "latest",
+    "rollup-plugin-css-only": "latest",
+    "rollup-plugin-command": "latest",
+    "dexie": "latest"
+  },
+  "scripts": {
+    "build": "npx rollup --config"
+  }
+}
