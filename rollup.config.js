@@ -34,13 +34,13 @@ export default [{
   ]
 }, {
   input: 'src/offline.js',
-  output: { file: 'docs/assets/offline.js', format: 'esm' },
+  output: { file: 'docs/offline.js', format: 'esm' },
   plugins: [
     cleanup({ comments: 'none' }),
     command(async () => {
-      const bundleFile = (await readFile('docs/assets/offline.js', 'utf-8'))
+      const bundleFile = (await readFile('docs/offline.js', 'utf-8'))
 
-      writeFile('docs/assets/offline.js', buildNumberFrontMatter + bundleFile)
+      writeFile('docs/offline.js', buildNumberFrontMatter + bundleFile)
     })
   ]
 }, {

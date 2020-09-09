@@ -7,6 +7,7 @@ self.addEventListener('install', (event) => {
         './assets/bundle.js?v={{ build_number }}',
         './assets/check-and-redirect.js?v={{ build_number }}',
         './assets/external.js?v={{ build_number }}',
+        './offline.js?v={{ build_number }}',
         './assets/png/favicon64.png'
       ])
     })
