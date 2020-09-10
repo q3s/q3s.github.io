@@ -8,7 +8,11 @@ self.addEventListener('install', (event) => {
         './assets/check-and-redirect.js?v={{ build_number }}',
         './assets/external.js?v={{ build_number }}',
         './offline.js?v={{ build_number }}',
-        './assets/png/favicon64.png'
+        './q3s.webmanifest?v={{ build_number }}',
+        './assets/png/favicon32.png?v={{ build_number }}',
+        './assets/png/favicon64.png?v={{ build_number }}',
+        './assets/png/favicon128.png?v={{ build_number }}',
+        './assets/png/favicon256.png?v={{ build_number }}'
       ])
     })
   )
