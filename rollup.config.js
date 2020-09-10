@@ -24,7 +24,7 @@ export default [{
   external: ['./external.js'],
   plugins: [
     cleanup({ comments: 'none' }),
-    css({ output: 'assets/bundle.css' }),
+    css({ output: 'docs/assets/bundle.css' }),
     command(async () => {
       const bundleFile = (await readFile('docs/assets/bundle.js', 'utf-8'))
         .replace(/(from '.*)'/ig, '$1?v={{ build_number }}\'')
