@@ -23,6 +23,6 @@
     "eslint": "npx nodutilus-eslint",
     "nyc": "npx nodutilus-nyc",
     "build": "npx rollup --config",
-    "all": "npx nodutilus-eslint && npx nodutilus-nyc && npx rollup --config"
+    "all": "node test && npx nodutilus-eslint && npx nodutilus-nyc && npx rollup --config"
   }
 }
