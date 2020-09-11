@@ -1,10 +1,13 @@
 {
+  "name": "q3s",
   "type": "module",
-  "description": "Q3S",
+  "description": "QR Share",
   "license": "Unlicense",
   "repository": "github:q3s/q3s.github.io",
   "devDependencies": {
     "@nodutilus/eslint-config": "latest",
+    "@nodutilus/test": "latest",
+    "jsdom": "latest",
     "@notml/core": "latest",
     "@rollup/plugin-node-resolve": "latest",
     "rollup": "latest",
