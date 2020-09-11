@@ -99,15 +99,15 @@ export class Tx64url extends Test {
     const url2 = new URL('http://qcos.ru/')
 
     url1.hash = new URLSearchParams('a=qcos.ru/api/')
-    url2.hash = new URLSearchParams('a=qcos.ru/апи.:#?!/')
+    url2.hash = new URLSearchParams('a=qcos.ru/апи:?/-_.!~*\'()')
 
     const url1Result = decodeURISearch(url1.href)
     const url2Result = decodeURISearch(url2.href)
     const eURI = encodeURI(decodeURIComponent(url2Result))
 
     assert.equal(url1Result, 'http://qcos.ru/#a=qcos.ru/api/')
-    assert.equal(url2Result, 'http://qcos.ru/#a=qcos.ru/%D0%B0%D0%BF%D0%B8.%3A%23%3F%21/')
-    assert.equal(eURI, 'http://qcos.ru/#a=qcos.ru/%D0%B0%D0%BF%D0%B8.:#?!/')
+    assert.equal(url2Result, 'http://qcos.ru/#a=qcos.ru/%D0%B0%D0%BF%D0%B8%3A%3F/-_.%21%7E*%27%28%29')
+    assert.equal(eURI, 'http://qcos.ru/#a=qcos.ru/%D0%B0%D0%BF%D0%B8:?/-_.!~*\'()')
   }
 
 }
