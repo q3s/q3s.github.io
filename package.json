@@ -6,6 +6,7 @@
   "repository": "github:q3s/q3s.github.io",
   "devDependencies": {
     "@nodutilus/eslint-config": "latest",
+    "@nodutilus/nyc-config": "latest",
     "@nodutilus/test": "latest",
     "jsdom": "latest",
     "@notml/core": "latest",
@@ -18,6 +19,10 @@
     "dexie": "latest"
   },
   "scripts": {
-    "build": "npx rollup --config"
+    "test": "node test",
+    "eslint": "npx nodutilus-eslint",
+    "nyc": "npx nodutilus-nyc",
+    "build": "npx rollup --config",
+    "all": "npx nodutilus-eslint && npx nodutilus-nyc && npx rollup --config"
   }
 }

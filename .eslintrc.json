@@ -28,6 +28,15 @@
         "browser": true,
         "node": true
       }
+    },
+    {
+      "files": [
+        "./nyc.config.cjs"
+      ],
+      "globals": {
+        "require": "readonly",
+        "module": "readonly"
+      }
     }
   ]
 }
