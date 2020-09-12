@@ -1,7 +1,7 @@
 ---
 ---
 {% capture build_number %}{{ site.github.build_revision }}{{ site.time | date: '%Y%m%d%H%M%S' }}{% endcapture %}
-import { oom, Dexie } from './external.js?v={{ build_number }}';
+import { oom, pako, QRCode, ZXing, Dexie } from './external.js?v={{ build_number }}';
 
 const { navigator } = window;
 if ('serviceWorker' in navigator) {
@@ -17,4 +17,7 @@ if ('serviceWorker' in navigator) {
 }
 
 console.log('oom:', oom);
+console.log('pako:', pako);
+console.log('QRCode:', QRCode);
+console.log('ZXing:', ZXing);
 console.log('Dexie:', Dexie);

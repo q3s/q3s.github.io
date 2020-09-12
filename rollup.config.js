@@ -1,5 +1,6 @@
 import resolve from '@rollup/plugin-node-resolve'
 import command from 'rollup-plugin-command'
+import commonjs from '@rollup/plugin-commonjs'
 import cleanup from 'rollup-plugin-cleanup'
 import css from 'rollup-plugin-css-only'
 import { terser } from 'rollup-plugin-terser'
@@ -15,6 +16,7 @@ export default [{
   output: { file: 'docs/assets/external.js', format: 'esm', compact: true },
   plugins: [
     resolve({ browser: true, preferBuiltins: false }),
+    commonjs({ include: 'node_modules/**' }),
     cleanup({ comments: 'none' }),
     terser()
   ]
