@@ -31,15 +31,15 @@ export class Tdataurl extends Test {
     const url2 = new URL('http://q3s.github.io/')
 
     url1.hash = new URLSearchParams('a=q3s.github.io/api/')
-    url2.hash = new URLSearchParams('a=q3s.github.io/апи:?/-_.!~*\'()')
+    url2.hash = new URLSearchParams('a=q3s.github.io/апи:?/-_.,;@+$!~*\'()')
 
     const url1Result = decodeURISearch(url1.href)
     const url2Result = decodeURISearch(url2.href)
     const eURI = encodeURI(decodeURIComponent(url2Result))
 
     assert.equal(url1Result, 'http://q3s.github.io/#a=q3s.github.io/api/')
-    assert.equal(url2Result, 'http://q3s.github.io/#a=q3s.github.io/%D0%B0%D0%BF%D0%B8%3A%3F/-_.%21%7E*%27%28%29')
-    assert.equal(eURI, 'http://q3s.github.io/#a=q3s.github.io/%D0%B0%D0%BF%D0%B8:?/-_.!~*\'()')
+    assert.equal(url2Result, 'http://q3s.github.io/#a=q3s.github.io/%D0%B0%D0%BF%D0%B8%3A%3F/-_.%2C%3B%40+%24%21%7E*%27%28%29')
+    assert.equal(eURI, 'http://q3s.github.io/#a=q3s.github.io/%D0%B0%D0%BF%D0%B8:?/-_.,;@+$!~*\'()')
   }
 
 }
