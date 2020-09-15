@@ -15,6 +15,8 @@ export class Tdataurl extends Test {
     assert.equal(testURLChars('0gYg.ff'), true)
     assert.equal(testURLChars('0gYg.1'), true)
     assert.equal(testURLChars('q3s.github.io/test/api'), true)
+    assert.equal(testURLChars("http://qrcoder.ru/#a=?/:-_.,;@+!~*'()"), true)
+    assert.equal(testURLChars('http://qrcoder.ru/#a=$'), false)
 
     const x64alphabet = '0123456789' +
       'abcdefghijklmnopqrstuvwxyz' +
