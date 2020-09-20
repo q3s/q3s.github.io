@@ -23,12 +23,21 @@ self.addEventListener('install', (event) => {
 });
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((keyList) => {
-      return Promise.all(keyList.map(key => {
+    caches.keys().then(async keyList => {
+      let isUpdate = false;
+      await Promise.all(keyList.map(key => {
         if (key !== '{{ build_number }}') {
+          isUpdate = true;
           return caches.delete(key)
         }
-      }))
+      }));
+      if (isUpdate) {
+        await self.clients.matchAll().then((clients) => {
+          clients.forEach((client) => {
+            client.postMessage('force-refresh');
+          });
+        });
+      }
     })
   );
 });

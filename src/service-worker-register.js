@@ -1,4 +1,4 @@
-const { navigator } = window
+const { navigator, location } = window
 
 
 if ('serviceWorker' in navigator) {
@@ -6,6 +6,12 @@ if ('serviceWorker' in navigator) {
     const { serviceWorker } = navigator
 
     await serviceWorker.register('/offline.js', { scope: '/' })
+
+    serviceWorker.addEventListener('message', event => {
+      if (event.data === 'force-refresh') {
+        location.reload()
+      }
+    })
 
     console.log('serviceWorker succeeded: v={{ build_number }}')
   })().catch(console.error)
