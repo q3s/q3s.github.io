@@ -17,6 +17,7 @@
     "docs/assets/bundle.js",
     "docs/assets/check-and-redirect.js",
     "docs/assets/external.js",
+    "docs/assets/mdc.js",
     "docs/assets/offline.js"
   ],
   "overrides": [
