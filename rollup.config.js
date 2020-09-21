@@ -30,7 +30,7 @@ export default [{
     resolve({ browser: true, preferBuiltins: false }),
     scss({
       output: 'docs/assets/mdc.css',
-      processor: css => postcss([autoprefixer])
+      processor: css => postcss([autoprefixer()])
     }),
     commonjs({ include: 'node_modules/**' }),
     cleanup({ comments: 'none' }),
