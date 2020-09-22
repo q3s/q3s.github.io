@@ -3,9 +3,7 @@ import command from 'rollup-plugin-command'
 import commonjs from '@rollup/plugin-commonjs'
 import cleanup from 'rollup-plugin-cleanup'
 import css from 'rollup-plugin-css-only'
-import scss from 'rollup-plugin-scss'
-import autoprefixer from 'autoprefixer'
-import postcss from 'postcss'
+import postcss from 'rollup-plugin-postcss'
 import { terser } from 'rollup-plugin-terser'
 import { readFile, writeFile } from 'fs/promises'
 
@@ -28,10 +26,7 @@ export default [{
   output: { file: 'docs/assets/mdc.js', format: 'esm', compact: true },
   plugins: [
     resolve({ browser: true, preferBuiltins: false }),
-    scss({
-      output: 'docs/assets/mdc.css',
-      processor: css => postcss([autoprefixer()])
-    }),
+    postcss({ extract: true, modules: true, minimize: true, use: [['sass', { includePaths: ['./node_modules'] }]] }),
     commonjs({ include: 'node_modules/**' }),
     cleanup({ comments: 'none' }),
     terser()
