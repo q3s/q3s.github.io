@@ -1,4 +1,15 @@
+@use "@material/theme" with (
+  $primary: #283593,
+  $secondary: #1a237e,
+  $on-primary: #e8eaf6,
+  $on-secondary: #e8eaf6,
+);
+
 @use "@material/icon-button";
 @use "@material/top-app-bar/mdc-top-app-bar";
+@use "@material/drawer";
+@use "@material/list";
 
 @include icon-button.core-styles;
+@include drawer.core-styles;
+@include list.core-styles;

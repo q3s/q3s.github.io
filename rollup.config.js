@@ -1,10 +1,9 @@
 import resolve from '@rollup/plugin-node-resolve'
+import alias from '@rollup/plugin-alias'
+import replace from '@rollup/plugin-replace'
 import command from 'rollup-plugin-command'
-import commonjs from '@rollup/plugin-commonjs'
 import cleanup from 'rollup-plugin-cleanup'
 import css from 'rollup-plugin-css-only'
-import postcss from 'rollup-plugin-postcss'
-import { terser } from 'rollup-plugin-terser'
 import { readFile, writeFile } from 'fs/promises'
 
 const buildNumberFrontMatter = `---
@@ -13,34 +12,25 @@ const buildNumberFrontMatter = `---
 `
 
 export default [{
-  input: 'src/external.js',
-  output: { file: 'docs/assets/external.js', format: 'esm', compact: true },
-  plugins: [
-    resolve({ browser: true, preferBuiltins: false }),
-    commonjs({ include: 'node_modules/**' }),
-    cleanup({ comments: 'none' }),
-    terser()
-  ]
-}, {
-  input: 'src/mdc.js',
-  output: { file: 'docs/assets/mdc.js', format: 'esm', compact: true },
-  plugins: [
-    resolve({ browser: true, preferBuiltins: false }),
-    postcss({ extract: true, modules: true, minimize: true, use: [['sass', { includePaths: ['./node_modules'] }]] }),
-    commonjs({ include: 'node_modules/**' }),
-    cleanup({ comments: 'none' }),
-    terser()
-  ]
-}, {
   input: 'src/bundle.js',
   output: { file: 'docs/assets/bundle.js', format: 'esm' },
-  external: ['./external.js'],
+  external: ['__external__', '__mdc__'],
   plugins: [
     cleanup({ comments: 'none' }),
     css({ output: 'docs/assets/bundle.css' }),
+    alias({
+      entries: [
+        { find: '../external.js', replacement: '__external__' },
+        { find: '@material/top-app-bar', replacement: '__mdc__' },
+        { find: '@material/drawer', replacement: '__mdc__' }
+      ]
+    }),
+    replace({
+      __external__: './external.js?v={{ build_number }}',
+      __mdc__: './mdc.js?v={{ build_number }}'
+    }),
     command(async () => {
       const bundleFile = (await readFile('docs/assets/bundle.js', 'utf-8'))
-        .replace(/(from '.*)'/ig, '$1?v={{ build_number }}\'')
 
       writeFile('docs/assets/bundle.js', buildNumberFrontMatter + bundleFile)
     })
