@@ -5,3 +5,14 @@ html {
 body {
   margin: 0;
 }
+
+.navigation-menu__content {
+  display: flex;
+}
+
+.navigation-menu__list {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex-grow: 1;
+}
