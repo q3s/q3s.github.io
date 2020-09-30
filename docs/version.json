@@ -1,0 +1,6 @@
+---
+---
+{% capture build_number %}{{ site.github.build_revision }}{{ site.time | date: '%Y%m%d%H%M%S' }}{% endcapture %}
+{
+  "buildNumber": "{{ build_number }}"
+}

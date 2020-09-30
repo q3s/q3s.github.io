@@ -1,4 +1,6 @@
 /docs/_site/
 /docs/Gemfile.lock
 
+/build/
+
 /node_modules/

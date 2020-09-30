@@ -7,13 +7,37 @@
   "rules": {
     "jsdoc/require-jsdoc": "off",
     "jsdoc/require-param": "off",
-    "jsdoc/require-returns": "off"
+    "jsdoc/require-returns": "off",
+    "jsdoc/require-param-description": "off",
+    "jsdoc/require-returns-description": "off"
   },
   "ignorePatterns": [
     "docs/_site",
+    "docs/offline.js",
     "docs/assets/bundle.js",
     "docs/assets/check-and-redirect.js",
     "docs/assets/external.js",
+    "docs/assets/mdc.js",
     "docs/assets/offline.js"
+  ],
+  "overrides": [
+    {
+      "files": [
+        "./test/**"
+      ],
+      "env": {
+        "browser": true,
+        "node": true
+      }
+    },
+    {
+      "files": [
+        "./nyc.config.cjs"
+      ],
+      "globals": {
+        "require": "readonly",
+        "module": "readonly"
+      }
+    }
   ]
 }

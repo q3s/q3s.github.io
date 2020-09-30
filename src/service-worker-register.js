@@ -1,16 +1,17 @@
-const { navigator } = window
+const { navigator, location } = window
 
 
 if ('serviceWorker' in navigator) {
   (async () => {
     const { serviceWorker } = navigator
-    const regSW = await serviceWorker.getRegistration()
 
+    await serviceWorker.register('/offline.js', { scope: '/' })
 
-    if (regSW && regSW.active && !regSW.active.scriptURL.endsWith('{{ build_number }}')) {
-      await regSW.unregister('/')
-    }
-    await serviceWorker.register('/offline.js?v={{ build_number }}', { scope: '/' })
+    serviceWorker.addEventListener('message', event => {
+      if (event.data === 'force-refresh') {
+        location.reload()
+      }
+    })
 
     console.log('serviceWorker succeeded: v={{ build_number }}')
   })().catch(console.error)

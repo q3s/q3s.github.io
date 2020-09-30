@@ -1,8 +1,9 @@
 import resolve from '@rollup/plugin-node-resolve'
+import alias from '@rollup/plugin-alias'
+import replace from '@rollup/plugin-replace'
 import command from 'rollup-plugin-command'
 import cleanup from 'rollup-plugin-cleanup'
-import css from 'rollup-plugin-css-only'
-import { terser } from 'rollup-plugin-terser'
+import postcss from 'rollup-plugin-postcss'
 import { readFile, writeFile } from 'fs/promises'
 
 const buildNumberFrontMatter = `---
@@ -11,25 +12,29 @@ const buildNumberFrontMatter = `---
 `
 
 export default [{
-  input: 'src/external.js',
-  output: { file: 'docs/assets/external.js', format: 'esm', compact: true },
-  plugins: [
-    resolve({ browser: true, preferBuiltins: false }),
-    cleanup({ comments: 'none' }),
-    terser()
-  ]
-}, {
   input: 'src/bundle.js',
   output: { file: 'docs/assets/bundle.js', format: 'esm' },
-  external: ['./external.js'],
+  external: ['__external__', '__mdc__'],
   plugins: [
     cleanup({ comments: 'none' }),
-    css({ output: 'assets/bundle.css' }),
+    postcss({ extract: true, use: [['sass', { includePaths: ['./node_modules'] }]] }),
+    alias({
+      entries: [
+        { find: '../external.js', replacement: '__external__' },
+        { find: '@material/top-app-bar', replacement: '__mdc__' },
+        { find: '@material/drawer', replacement: '__mdc__' }
+      ]
+    }),
+    replace({
+      __external__: './external.js?v={{ build_number }}',
+      __mdc__: './mdc.js?v={{ build_number }}'
+    }),
     command(async () => {
-      const bundleFile = (await readFile('docs/assets/bundle.js', 'utf-8'))
-        .replace(/(from '.*)'/ig, '$1?v={{ build_number }}\'')
+      const bundleFileJS = (await readFile('docs/assets/bundle.js', 'utf-8'))
+      const bundleFileCSS = (await readFile('docs/assets/bundle.css', 'utf-8'))
 
-      writeFile('docs/assets/bundle.js', buildNumberFrontMatter + bundleFile)
+      writeFile('docs/assets/bundle.js', buildNumberFrontMatter + bundleFileJS)
+      writeFile('docs/assets/bundle.css', buildNumberFrontMatter + bundleFileCSS)
     })
   ]
 }, {

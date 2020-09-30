@@ -1,34 +1,22 @@
+---
+---
+{% capture build_number %}{{ site.github.build_revision }}{{ site.time | date: '%Y%m%d%H%M%S' }}{% endcapture %}
 {
-  "name": "Q3S",
+  "name": "QR Share",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "background_color": "#FFF",
   "theme_color": "#FFF",
-  "description": "Q3S",
+  "description": "Quick secure share source",
   "categories": [
-    "shopping"
+    "utilities"
   ],
   "icons": [
     {
-      "src": "/assets/png/favicon32.png",
-      "type": "image/png",
-      "sizes": "32x32"
-    },
-    {
-      "src": "/assets/png/favicon64.png",
-      "type": "image/png",
-      "sizes": "64x64"
-    },
-    {
-      "src": "/assets/png/favicon128.png",
-      "type": "image/png",
-      "sizes": "128x128"
-    },
-    {
-      "src": "/assets/png/favicon256.png",
-      "type": "image/png",
-      "sizes": "256x256"
+      "src": "/assets/svg/favicon.svg?v={{ build_number }}",
+      "type": "image/svg+xml",
+      "sizes": "any"
     }
   ]
 }

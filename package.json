@@ -1,20 +1,41 @@
 {
+  "name": "q3s",
   "type": "module",
-  "description": "Q3S",
+  "description": "QR Share",
   "license": "Unlicense",
   "repository": "github:q3s/q3s.github.io",
   "devDependencies": {
     "@nodutilus/eslint-config": "latest",
+    "@nodutilus/nyc-config": "latest",
+    "@nodutilus/test": "latest",
     "@notml/core": "latest",
+    "jsdom": "latest",
     "@rollup/plugin-node-resolve": "latest",
+    "@rollup/plugin-commonjs": "latest",
+    "@rollup/plugin-replace": "latest",
+    "@rollup/plugin-alias": "latest",
     "rollup": "latest",
+    "rollup-plugin-command": "latest",
     "rollup-plugin-terser": "latest",
     "rollup-plugin-cleanup": "latest",
-    "rollup-plugin-css-only": "latest",
-    "rollup-plugin-command": "latest",
-    "dexie": "latest"
+    "rollup-plugin-postcss": "latest",
+    "sass": "latest",
+    "pako": "^1.0.11",
+    "qrcode": "^1.4.4",
+    "@zxing/library": "^0.17.1",
+    "dexie": "^3.0.2",
+    "@material/theme": "^7.0.0",
+    "@material/icon-button": "^7.0.0",
+    "@material/top-app-bar": "^7.0.0",
+    "@material/drawer": "^7.0.0",
+    "@material/list": "^7.0.0"
   },
   "scripts": {
-    "build": "npx rollup --config"
+    "test": "node test",
+    "eslint": "npx nodutilus-eslint",
+    "nyc": "npx nodutilus-nyc",
+    "build-external": "npx rollup --config rollup-ext.config.js",
+    "build": "npx rollup --config",
+    "all": "node test && npx nodutilus-eslint && npx nodutilus-nyc && npx rollup --config"
   }
 }
