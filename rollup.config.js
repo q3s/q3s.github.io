@@ -3,7 +3,7 @@ import alias from '@rollup/plugin-alias'
 import replace from '@rollup/plugin-replace'
 import command from 'rollup-plugin-command'
 import cleanup from 'rollup-plugin-cleanup'
-import css from 'rollup-plugin-css-only'
+import postcss from 'rollup-plugin-postcss'
 import { readFile, writeFile } from 'fs/promises'
 
 const buildNumberFrontMatter = `---
@@ -17,7 +17,7 @@ export default [{
   external: ['__external__', '__mdc__'],
   plugins: [
     cleanup({ comments: 'none' }),
-    css({ output: 'docs/assets/bundle.css' }),
+    postcss({ extract: true, use: [['sass', { includePaths: ['./node_modules'] }]] }),
     alias({
       entries: [
         { find: '../external.js', replacement: '__external__' },

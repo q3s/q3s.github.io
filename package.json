@@ -18,7 +18,6 @@
     "rollup-plugin-command": "latest",
     "rollup-plugin-terser": "latest",
     "rollup-plugin-cleanup": "latest",
-    "rollup-plugin-css-only": "latest",
     "rollup-plugin-postcss": "latest",
     "sass": "latest",
     "pako": "^1.0.11",
