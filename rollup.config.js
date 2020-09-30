@@ -30,9 +30,11 @@ export default [{
       __mdc__: './mdc.js?v={{ build_number }}'
     }),
     command(async () => {
-      const bundleFile = (await readFile('docs/assets/bundle.js', 'utf-8'))
+      const bundleFileJS = (await readFile('docs/assets/bundle.js', 'utf-8'))
+      const bundleFileCSS = (await readFile('docs/assets/bundle.css', 'utf-8'))
 
-      writeFile('docs/assets/bundle.js', buildNumberFrontMatter + bundleFile)
+      writeFile('docs/assets/bundle.js', buildNumberFrontMatter + bundleFileJS)
+      writeFile('docs/assets/bundle.css', buildNumberFrontMatter + bundleFileCSS)
     })
   ]
 }, {

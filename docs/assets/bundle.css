@@ -1,9 +1,20 @@
+---
+---
+{% capture build_number %}{{ site.github.build_revision }}{{ site.time | date: '%Y%m%d%H%M%S' }}{% endcapture %}
 html {
   font-family: "Roboto", sans-serif;
 }
 
 body {
   margin: 0;
+}
+
+.navigation-drawer__logo {
+  background-image: url("/assets/svg/favicon.svg?v={{ build_number }}");
+  background-size: 40px;
+  background-repeat: no-repeat;
+  padding-left: 72px;
+  background-position: 16px 18px;
 }
 
 .navigation-menu__content {

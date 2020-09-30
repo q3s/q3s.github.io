@@ -15,10 +15,7 @@ self.addEventListener('install', (event) => {
         './assets/bundle.css?v={{ build_number }}',
         './assets/bundle.js?v={{ build_number }}',
         './assets/check-and-redirect.js?v={{ build_number }}',
-        './assets/png/favicon32.png?v={{ build_number }}',
-        './assets/png/favicon64.png?v={{ build_number }}',
-        './assets/png/favicon128.png?v={{ build_number }}',
-        './assets/png/favicon256.png?v={{ build_number }}'
+        './assets/svg/favicon.svg?v={{ build_number }}'
       ])
     })
   );
