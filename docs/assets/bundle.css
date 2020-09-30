@@ -27,3 +27,7 @@ body {
   justify-content: space-between;
   flex-grow: 1;
 }
+
+.mdc-top-app-bar__top-to-down {
+  bottom: 0;
+}
