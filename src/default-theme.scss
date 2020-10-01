@@ -28,13 +28,9 @@ body {
   flex-grow: 1;
 }
 
-.mdc-top-app-bar__top-to-down {
-  bottom: 0;
-}
-
-.code-scanner__button {
-  @include fab.icon-size(32px, 32px);
-  margin: -(fab.$height) auto 0;
-  background-color: theme.$background;
-  border-radius: 50%;
+.code-scanner__button-fixed {
+  @include fab.icon-size(28px, 28px);
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
 }

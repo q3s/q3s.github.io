@@ -19,7 +19,6 @@ if ('serviceWorker' in navigator) {
 }
 
 const topAppBar = new MDCTopAppBar(document.querySelector('.drawer-top-app-bar'));
-const topAppBarBottom = new MDCTopAppBar(document.querySelector('.mdc-top-app-bar__top-to-down'));
 const drawer = MDCDrawer.attachTo(document.querySelector('.mdc-drawer'));
 const fabRipple = new MDCRipple(document.querySelector('.mdc-fab'));
 topAppBar.setScrollTarget(document.querySelector('.main-content'));
@@ -32,6 +31,5 @@ console.log('QRCode:', QRCode);
 console.log('ZXing:', ZXing);
 console.log('Dexie:', Dexie);
 console.log(topAppBar);
-console.log(topAppBarBottom);
 console.log(drawer);
 console.log(fabRipple);
