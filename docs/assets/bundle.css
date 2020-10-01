@@ -31,3 +31,14 @@ body {
 .mdc-top-app-bar__top-to-down {
   bottom: 0;
 }
+
+.code-scanner__button {
+  margin: -56px auto 0;
+  background-color: #fff;
+  border-radius: 50%;
+}
+.code-scanner__button .mdc-fab__icon {
+  width: 32px;
+  height: 32px;
+  font-size: 32px;
+}

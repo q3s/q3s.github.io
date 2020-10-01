@@ -28,7 +28,9 @@
     "@material/icon-button": "^7.0.0",
     "@material/top-app-bar": "^7.0.0",
     "@material/drawer": "^7.0.0",
-    "@material/list": "^7.0.0"
+    "@material/list": "^7.0.0",
+    "@material/fab": "^7.0.0",
+    "@material/ripple": "^7.0.0"
   },
   "scripts": {
     "test": "node test",

@@ -1,3 +1,6 @@
+@use "@material/fab";
+@use "@material/theme";
+
 html {
   font-family: "Roboto", sans-serif;
 }
@@ -27,4 +30,11 @@ body {
 
 .mdc-top-app-bar__top-to-down {
   bottom: 0;
+}
+
+.code-scanner__button {
+  @include fab.icon-size(32px, 32px);
+  margin: -(fab.$height) auto 0;
+  background-color: theme.$background;
+  border-radius: 50%;
 }
