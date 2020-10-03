@@ -1,8 +1,8 @@
 ---
 ---
 {% capture build_number %}{{ site.github.build_revision }}{{ site.time | date: '%Y%m%d%H%M%S' }}{% endcapture %}
-import { MDCTopAppBar, MDCDrawer, MDCRipple } from './mdc.js?v={{ build_number }}';
 import { oom, pako, QRCode, ZXing, Dexie } from './external.js?v={{ build_number }}';
+import { MDCDrawer, MDCTopAppBar, MDCRipple } from './mdc.js?v={{ build_number }}';
 
 const { navigator, location } = window;
 if ('serviceWorker' in navigator) {
@@ -18,18 +18,18 @@ if ('serviceWorker' in navigator) {
   })().catch(console.error);
 }
 
-const topAppBar = new MDCTopAppBar(document.querySelector('.drawer-top-app-bar'));
-const drawer = MDCDrawer.attachTo(document.querySelector('.mdc-drawer'));
-const fabRipple = new MDCRipple(document.querySelector('.mdc-fab'));
-topAppBar.setScrollTarget(document.querySelector('.main-content'));
-topAppBar.listen('MDCTopAppBar:nav', () => {
-  drawer.open = !drawer.open;
+const q3sDrawer = MDCDrawer.attachTo(document.querySelector('.q3s-navigation-drawer'));
+
+const q3sTopAppBar = MDCTopAppBar.attachTo(document.querySelector('.q3s-top-app-bar'));
+q3sTopAppBar.setScrollTarget(document.querySelector('.q3s-main-content'));
+q3sTopAppBar.listen('MDCTopAppBar:nav', () => {
+  q3sDrawer.open = !q3sDrawer.open;
 });
+
+MDCRipple.attachTo(document.querySelector('.q3s-code-scanner__button'));
+
 console.log('oom:', oom);
 console.log('pako:', pako);
 console.log('QRCode:', QRCode);
 console.log('ZXing:', ZXing);
 console.log('Dexie:', Dexie);
-console.log(topAppBar);
-console.log(drawer);
-console.log(fabRipple);
