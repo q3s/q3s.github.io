@@ -1,5 +1,7 @@
 import { MDCTopAppBar } from '@material/top-app-bar'
 import { q3sDrawer } from './navigation-drawer.js'
+import '../components/navigation-router.js'
+import '../components/navigation-container.js'
 
 const q3sTopAppBar = MDCTopAppBar.attachTo(document.querySelector('.q3s-top-app-bar'))
 

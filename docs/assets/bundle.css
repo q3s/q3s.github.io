@@ -26,6 +26,16 @@ body {
   justify-content: space-between;
   flex-grow: 1;
 }
+q3s-navigation-router {
+  display: contents;
+}
+q3s-navigation-container {
+  display: none;
+}
+
+.q3s-navigation-container--activated {
+  display: contents;
+}
 .q3s-code-scanner__button-fixed {
   position: fixed;
   right: 1rem;
