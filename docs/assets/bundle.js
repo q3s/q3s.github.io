@@ -23,12 +23,16 @@ const q3sDrawer = MDCDrawer.attachTo(document.querySelector('.q3s-navigation-dra
 class Q3SNavigationRouter extends HTMLElement {
   static tagName = 'q3s-navigation-router'
   all = new Set()
-  exclude = {}
   include = {}
+  exclude = {}
   connectedCallback() {
     this.querySelectorAll('q3s-navigation-container').forEach(item => {
-      if (item.include) {
-        item.include.forEach(pageName => {
+      let include = item.getAttribute('include');
+      let exclude = item.getAttribute('exclude');
+      include = include ? include.split(',') : false;
+      exclude = exclude ? exclude.split(',') : false;
+      if (include) {
+        include.forEach(pageName => {
           if (!this.include[pageName]) {
             this.include[pageName] = new Set();
           }
@@ -36,8 +40,8 @@ class Q3SNavigationRouter extends HTMLElement {
         });
       } else {
         this.all.add(item);
-        if (item.exclude) {
-          item.exclude.forEach(pageName => {
+        if (exclude) {
+          exclude.forEach(pageName => {
             if (!this.exclude[pageName]) {
               this.exclude[pageName] = new Set();
             }
@@ -46,15 +50,12 @@ class Q3SNavigationRouter extends HTMLElement {
         }
       }
     });
-    console.log(this);
   }
 }
 oom.define(Q3SNavigationRouter);
 
 class Q3SNavigationContainer extends HTMLElement {
   static tagName = 'q3s-navigation-container'
-  exclude = null
-  include = null
   set activated(value) {
     if (value) {
       this.classList.add('q3s-navigation-container--activated');
@@ -64,23 +65,6 @@ class Q3SNavigationContainer extends HTMLElement {
   }
   get activated() {
     return this.classList.contains('q3s-navigation-container--activated')
-  }
-  constructor() {
-    super();
-    const exclude = this.getAttribute('exclude');
-    const include = this.getAttribute('include');
-    this.exclude = exclude ? exclude.split(',') : [];
-    this.include = include ? include.split(',') : [];
-  }
-  excludeChanged(oldValue, newValue) {
-    if (oldValue !== newValue) {
-      this.exclude = newValue ? newValue.split(',') : [];
-    }
-  }
-  includeChanged(oldValue, newValue) {
-    if (oldValue !== newValue) {
-      this.include = newValue ? newValue.split(',') : [];
-    }
   }
 }
 oom.define(Q3SNavigationContainer);
