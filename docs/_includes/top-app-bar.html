@@ -3,20 +3,20 @@
     <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
       <button class="material-icons mdc-top-app-bar__navigation-icon mdc-icon-button">menu</button>
       <q3s-navigation-router>
-        <q3s-navigation-container exclude="#">
+        <div class="q3s-navigation-container" exclude="#,#filter">
           <a class="material-icons mdc-top-app-bar__action-item mdc-icon-button" href="#">navigate_before</a>
-        </q3s-navigation-container>
+        </div>
       </q3s-navigation-router>
       <span class="mdc-top-app-bar__title">QR Share</span>
     </section>
     <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-end">
       <q3s-navigation-router>
-        <q3s-navigation-container include="#">
+        <div class="q3s-navigation-container" include="#">
           <a class="material-icons mdc-top-app-bar__action-item mdc-icon-button" href="#filter">filter_alt</a>
-        </q3s-navigation-container>
-        <q3s-navigation-container include="#filter">
+        </div>
+        <div class="q3s-navigation-container" include="#filter">
           <a class="material-icons mdc-top-app-bar__action-item mdc-icon-button" href="#">close</a>
-        </q3s-navigation-container>
+        </div>
       </q3s-navigation-router>
     </section>
   </div>

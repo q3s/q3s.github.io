@@ -20,13 +20,20 @@ if ('serviceWorker' in navigator) {
 
 const q3sDrawer = MDCDrawer.attachTo(document.querySelector('.q3s-navigation-drawer'));
 
+const { location: location$1 } = window;
 class Q3SNavigationRouter extends HTMLElement {
   static tagName = 'q3s-navigation-router'
   all = new Set()
   include = {}
   exclude = {}
+  constructor() {
+    super();
+    this._navigate = () => {
+      this.navigate(location$1.hash);
+    };
+  }
   connectedCallback() {
-    this.querySelectorAll('q3s-navigation-container').forEach(item => {
+    this.querySelectorAll('.q3s-navigation-container').forEach(item => {
       let include = item.getAttribute('include');
       let exclude = item.getAttribute('exclude');
       include = include ? include.split(',') : false;
@@ -50,24 +57,39 @@ class Q3SNavigationRouter extends HTMLElement {
         }
       }
     });
+    this.navigate(location$1.hash);
+    window.addEventListener('hashchange', this._navigate, false);
+  }
+  disconnectedCallback() {
+    window.removeEventListener('hashchange', this._navigate, false);
+  }
+  navigate(page) {
+    const activated = new Set();
+    const lastActivated = this.querySelectorAll('.q3s-navigation-container--activated');
+    page = page || '#';
+    if (this.include[page]) {
+      this.include[page].forEach(item => {
+        item.classList.add('q3s-navigation-container--activated');
+        activated.add(item);
+      });
+    }
+    const exclude = this.exclude[page];
+    this.all.forEach(item => {
+      if (exclude && exclude.has(item)) {
+        item.classList.remove('q3s-navigation-container--activated');
+      } else {
+        item.classList.add('q3s-navigation-container--activated');
+        activated.add(item);
+      }
+    });
+    lastActivated.forEach(item => {
+      if (!activated.has(item)) {
+        item.classList.remove('q3s-navigation-container--activated');
+      }
+    });
   }
 }
 oom.define(Q3SNavigationRouter);
-
-class Q3SNavigationContainer extends HTMLElement {
-  static tagName = 'q3s-navigation-container'
-  set activated(value) {
-    if (value) {
-      this.classList.add('q3s-navigation-container--activated');
-    } else {
-      this.classList.remove('q3s-navigation-container--activated');
-    }
-  }
-  get activated() {
-    return this.classList.contains('q3s-navigation-container--activated')
-  }
-}
-oom.define(Q3SNavigationContainer);
 
 const q3sTopAppBar = MDCTopAppBar.attachTo(document.querySelector('.q3s-top-app-bar'));
 q3sTopAppBar.setScrollTarget(document.querySelector('.q3s-main-content'));

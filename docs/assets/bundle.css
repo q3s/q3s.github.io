@@ -29,7 +29,8 @@ body {
 q3s-navigation-router {
   display: contents;
 }
-q3s-navigation-container {
+
+.q3s-navigation-container {
   display: none;
 }
 
