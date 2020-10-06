@@ -1,4 +1,5 @@
 import { oom, pako, QRCode, ZXing, Dexie } from '../external.js'
+import '../components/navigation-router.js'
 import '../includes/navigation-drawer.js'
 import '../includes/top-app-bar.js'
 import '../includes/bottom-app-bar.js'

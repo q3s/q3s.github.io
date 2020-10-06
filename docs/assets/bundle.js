@@ -18,8 +18,6 @@ if ('serviceWorker' in navigator) {
   })().catch(console.error);
 }
 
-const q3sDrawer = MDCDrawer.attachTo(document.querySelector('.q3s-navigation-drawer'));
-
 const { location: location$1 } = window;
 class Q3SNavigationRouter extends HTMLElement {
   static tagName = 'q3s-navigation-router'
@@ -91,11 +89,29 @@ class Q3SNavigationRouter extends HTMLElement {
 }
 oom.define(Q3SNavigationRouter);
 
+const { location: location$2 } = window;
+const q3sDrawer = MDCDrawer.attachTo(document.querySelector('.q3s-navigation-drawer'));
+function updateItemActivated() {
+  const itemActivated = document.querySelector('.mdc-list-item--activated');
+  if (itemActivated) {
+    itemActivated.classList.remove('mdc-list-item--activated');
+  }
+  if ((/#\w*/).test(location$2.hash)) {
+    const newItemActivated = document.querySelector(`.mdc-list-item[href="${location$2.hash}"]`);
+    if (newItemActivated) {
+      newItemActivated.classList.add('mdc-list-item--activated');
+    }
+  }
+}
+window.addEventListener('hashchange', updateItemActivated, false);
+updateItemActivated();
+
 const q3sTopAppBar = MDCTopAppBar.attachTo(document.querySelector('.q3s-top-app-bar'));
 q3sTopAppBar.setScrollTarget(document.querySelector('.q3s-main-content'));
 q3sTopAppBar.listen('MDCTopAppBar:nav', () => {
   q3sDrawer.open = !q3sDrawer.open;
 });
+window.addEventListener('hashchange', () => { q3sDrawer.open = false; }, false);
 
 MDCRipple.attachTo(document.querySelector('.q3s-code-scanner__button'));
 
