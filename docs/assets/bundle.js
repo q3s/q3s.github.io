@@ -31,7 +31,7 @@ class Q3SNavigationRouter extends HTMLElement {
     };
   }
   connectedCallback() {
-    this.querySelectorAll('.q3s-navigation-container').forEach(item => {
+    this.querySelectorAll('q3s-navigation-container').forEach(item => {
       let include = item.getAttribute('include');
       let exclude = item.getAttribute('exclude');
       include = include ? include.split(',') : false;
@@ -63,26 +63,26 @@ class Q3SNavigationRouter extends HTMLElement {
   }
   navigate(page) {
     const activated = new Set();
-    const lastActivated = this.querySelectorAll('.q3s-navigation-container--activated');
+    const lastActivated = this.querySelectorAll('q3s-navigation-container[activated]');
     page = page || '#';
     if (this.include[page]) {
       this.include[page].forEach(item => {
-        item.classList.add('q3s-navigation-container--activated');
+        item.setAttribute('activated', true);
         activated.add(item);
       });
     }
     const exclude = this.exclude[page];
     this.all.forEach(item => {
       if (exclude && exclude.has(item)) {
-        item.classList.remove('q3s-navigation-container--activated');
+        item.removeAttribute('activated');
       } else {
-        item.classList.add('q3s-navigation-container--activated');
+        item.setAttribute('activated', true);
         activated.add(item);
       }
     });
     lastActivated.forEach(item => {
       if (!activated.has(item)) {
-        item.classList.remove('q3s-navigation-container--activated');
+        item.removeAttribute('activated');
       }
     });
   }
