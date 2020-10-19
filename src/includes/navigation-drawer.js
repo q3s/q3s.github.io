@@ -3,6 +3,7 @@ import './navigation-drawer.scss'
 
 const { location } = window
 const q3sDrawer = MDCDrawer.attachTo(document.querySelector('.q3s-navigation-drawer'))
+const q3sMainContent = document.querySelector('.q3s-main-content')
 
 
 function updateItemActivated() {
@@ -24,6 +25,14 @@ function updateItemActivated() {
 
 window.addEventListener('hashchange', updateItemActivated, false)
 updateItemActivated()
+
+window.addEventListener('MDCDrawer:closed', () => {
+  const firstInpt = q3sMainContent.querySelector('input, button')
+
+  if (firstInpt) {
+    firstInpt.focus()
+  }
+})
 
 
 export {

@@ -90,6 +90,7 @@ oom.define(class Q3SNavigationRouter extends HTMLElement {
 
 const { location: location$2 } = window;
 const q3sDrawer = MDCDrawer.attachTo(document.querySelector('.q3s-navigation-drawer'));
+const q3sMainContent = document.querySelector('.q3s-main-content');
 function updateItemActivated() {
   const itemActivated = document.querySelector('.mdc-list-item--activated');
   if (itemActivated) {
@@ -104,6 +105,12 @@ function updateItemActivated() {
 }
 window.addEventListener('hashchange', updateItemActivated, false);
 updateItemActivated();
+window.addEventListener('MDCDrawer:closed', () => {
+  const firstInpt = q3sMainContent.querySelector('input, button');
+  if (firstInpt) {
+    firstInpt.focus();
+  }
+});
 
 const q3sTopAppBar = MDCTopAppBar.attachTo(document.querySelector('.q3s-top-app-bar'));
 q3sTopAppBar.setScrollTarget(document.querySelector('.q3s-main-content'));
