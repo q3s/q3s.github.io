@@ -19,7 +19,7 @@ if ('serviceWorker' in navigator) {
 }
 
 const { location: location$1 } = window;
-class Q3SNavigationRouter extends HTMLElement {
+oom.define(class Q3SNavigationRouter extends HTMLElement {
   static tagName = 'q3s-navigation-router'
   all = new Set()
   include = {}
@@ -86,8 +86,7 @@ class Q3SNavigationRouter extends HTMLElement {
       }
     });
   }
-}
-oom.define(Q3SNavigationRouter);
+});
 
 const { location: location$2 } = window;
 const q3sDrawer = MDCDrawer.attachTo(document.querySelector('.q3s-navigation-drawer'));

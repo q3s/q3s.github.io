@@ -4,7 +4,7 @@ import './navigation-router.scss'
 const { location } = window
 
 
-class Q3SNavigationRouter extends HTMLElement {
+oom.define(class Q3SNavigationRouter extends HTMLElement {
 
   static tagName = 'q3s-navigation-router'
 
@@ -84,11 +84,4 @@ class Q3SNavigationRouter extends HTMLElement {
     })
   }
 
-}
-
-oom.define(Q3SNavigationRouter)
-
-
-export {
-  Q3SNavigationRouter
-}
+})
