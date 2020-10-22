@@ -123,6 +123,8 @@ MDCRipple.attachTo(document.querySelector('.q3s-code-scanner__button'));
 
 const { location: location$3 } = window;
 const templates = {
+  '#add': oom()
+    .span('qwe')
 };
 oom.define(class MainContentController extends HTMLElement {
   static tagName = 'q3s-main-content-controller'

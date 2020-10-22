@@ -3,7 +3,8 @@ import './main-content-controller.scss'
 
 const { location } = window
 const templates = {
-
+  '#add': oom()
+    .span('qwe')
 }
 
 
