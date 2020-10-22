@@ -47,3 +47,8 @@ q3s-navigation-container[activated] {
   height: 28px;
   font-size: 28px;
 }
+q3s-main-content-controller {
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem;
+}

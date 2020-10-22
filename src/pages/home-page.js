@@ -3,6 +3,7 @@ import '../components/navigation-router.js'
 import '../includes/navigation-drawer.js'
 import '../includes/top-app-bar.js'
 import '../includes/bottom-app-bar.js'
+import '../includes/main-content-controller.js'
 
 
 console.log('oom:', oom)

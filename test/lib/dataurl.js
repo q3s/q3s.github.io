@@ -1,5 +1,10 @@
 import { Test, assert } from '@nodutilus/test'
-import { testURLChars, decodeURISearch } from '../../lib/dataurl.js'
+import {
+  testURLChars,
+  decodeURISearch,
+  deflateJSONURL,
+  inflateJSONURL
+} from '../../lib/dataurl.js'
 
 
 /**
@@ -42,6 +47,13 @@ export class Tdataurl extends Test {
     assert.equal(url1Result, 'http://q3s.github.io/#a=q3s.github.io/api/')
     assert.equal(url2Result, 'http://q3s.github.io/#a=q3s.github.io/%D0%B0%D0%BF%D0%B8%3A%3F/-_.%2C%3B%40+%24%21%7E*%27%28%29')
     assert.equal(eURI, 'http://q3s.github.io/#a=q3s.github.io/%D0%B0%D0%BF%D0%B8:?/-_.,;@+$!~*\'()')
+  }
+
+  ['deflateJSONURL']() {
+    const a = deflateJSONURL({ a: true })
+    const b = inflateJSONURL(a)
+
+    assert.deepEqual(b, { a: true })
   }
 
 }

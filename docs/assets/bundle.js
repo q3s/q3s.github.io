@@ -121,6 +121,42 @@ window.addEventListener('hashchange', () => { q3sDrawer.open = false; }, false);
 
 MDCRipple.attachTo(document.querySelector('.q3s-code-scanner__button'));
 
+const { location: location$3 } = window;
+const templates = {
+};
+oom.define(class MainContentController extends HTMLElement {
+  static tagName = 'q3s-main-content-controller'
+  template = oom.div('test')
+  constructor() {
+    super();
+    this.page = null;
+    this._navigate = () => {
+      this.navigate(location$3.hash);
+    };
+  }
+  connectedCallback() {
+    this.navigate(location$3.hash);
+    window.addEventListener('hashchange', this._navigate, false);
+  }
+  disconnectedCallback() {
+    window.removeEventListener('hashchange', this._navigate, false);
+  }
+  navigate(page) {
+    page = page || '#';
+    if (this.page !== page) {
+      let template;
+      if (page in templates) {
+        template = templates[page].clone();
+      } else {
+        template = oom.span(`"${page}" - Страница пока пуста`);
+      }
+      this.innerHTML = '';
+      this.append(template.dom);
+    }
+    this.page = page;
+  }
+});
+
 console.log('oom:', oom);
 console.log('pako:', pako);
 console.log('QRCode:', QRCode);
