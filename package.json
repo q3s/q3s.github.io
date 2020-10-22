@@ -30,7 +30,9 @@
     "@material/drawer": "^7.0.0",
     "@material/list": "^7.0.0",
     "@material/fab": "^7.0.0",
-    "@material/ripple": "^7.0.0"
+    "@material/ripple": "^7.0.0",
+    "@material/textfield": "^7.0.0",
+    "@material/select": "^7.0.0"
   },
   "scripts": {
     "test": "node test",

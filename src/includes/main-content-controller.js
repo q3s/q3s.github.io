@@ -1,10 +1,10 @@
 import { oom } from '@notml/core'
 import './main-content-controller.scss'
+import '../components/editor-controller.js'
 
 const { location } = window
 const templates = {
-  '#add': oom()
-    .span('qwe')
+  '#add': oom('q3s-editor-controller')
 }
 
 
