@@ -2,7 +2,7 @@
 ---
 {% capture build_number %}{{ site.github.build_revision }}{{ site.time | date: '%Y%m%d%H%M%S' }}{% endcapture %}
 import { oom, pako, QRCode, ZXing, Dexie } from './external.js?v={{ build_number }}';
-import { MDCDrawer, MDCTopAppBar, MDCRipple } from './mdc.js?v={{ build_number }}';
+import { MDCDrawer, MDCTopAppBar, MDCRipple, MDCSelect } from './mdc.js?v={{ build_number }}';
 
 const { navigator, location } = window;
 if ('serviceWorker' in navigator) {
@@ -123,12 +123,12 @@ MDCRipple.attachTo(document.querySelector('.q3s-code-scanner__button'));
 
 oom.define(class Q3SEditorController extends HTMLElement {
   static tagName = 'q3s-editor-controller'
-  template = oom.div({ class: 'mdc-select mdc-select--filled' }, oom
+  template = () => oom.div({ class: 'mdc-select mdc-select--filled' }, oom
     .div({ class: 'mdc-select__anchor' }, oom
       .span({ class: 'mdc-select__ripple' })
       .span({ class: 'mdc-select__selected-text' })
-      .span({ class: 'mdc-select__dropdown-icon' }, oom
-        .svg({ class: 'mdc-select__dropdown-icon-graphic', viewBox: '7 10 10 5' }, oom
+      .span({ class: 'mdc-select__dropdown-icon' }, elm => {
+        elm.innerHTML = oom('svg', { class: 'mdc-select__dropdown-icon-graphic', viewbox: '7 10 10 5' }, oom
           .polygon({
             'class': 'mdc-select__dropdown-icon-inactive',
             'stroke': 'none',
@@ -140,15 +140,34 @@ oom.define(class Q3SEditorController extends HTMLElement {
             'stroke': 'none',
             'fill-rule': 'evenodd',
             'points': '7 15 12 10 17 15'
-          })))
+          })).dom.outerHTML;
+      })
       .span('Тип данных', { class: 'mdc-floating-label' })
       .span({ class: 'mdc-line-ripple' }))
-    .div({ class: 'mdc-select__menu mdc-menu mdc-menu-surface mdc-menu-surface--fullwidth' }))
+    .div({ class: 'mdc-select__menu mdc-menu mdc-menu-surface mdc-menu-surface--fullwidth' }, oom
+      .ul({ class: 'mdc-list' }, oom
+        .li({
+          'class': 'mdc-list-item mdc-list-item--selected',
+          'data-value': '',
+          'aria-selected': 'true'
+        }, oom.span({ class: 'mdc-list-item__ripple' }))
+        .li({
+          'class': 'mdc-list-item mdc-list-item--selected',
+          'data-value': 'text',
+          'aria-selected': 'true'
+        }, oom
+          .span({ class: 'mdc-list-item__ripple' })
+          .span('Текст', { class: 'mdc-list-item__text' }))
+      )), select => { this._typeSelect = select; })
+  connectedCallback() {
+    const select = new MDCSelect(this._typeSelect);
+    console.log(this._typeSelect);
+  }
 });
 
 const { location: location$3 } = window;
 const templates = {
-  '#add': oom('q3s-editor-controller')
+  '#add': () => oom('q3s-editor-controller')
 };
 oom.define(class MainContentController extends HTMLElement {
   static tagName = 'q3s-main-content-controller'
@@ -172,7 +191,7 @@ oom.define(class MainContentController extends HTMLElement {
     if (this.page !== page) {
       let template;
       if (page in templates) {
-        template = templates[page].clone();
+        template = templates[page]();
       } else {
         template = oom.span(`"${page}" - Страница пока пуста`);
       }

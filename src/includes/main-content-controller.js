@@ -4,7 +4,7 @@ import '../components/editor-controller.js'
 
 const { location } = window
 const templates = {
-  '#add': oom('q3s-editor-controller')
+  '#add': () => oom('q3s-editor-controller')
 }
 
 
@@ -37,7 +37,7 @@ oom.define(class MainContentController extends HTMLElement {
       let template
 
       if (page in templates) {
-        template = templates[page].clone()
+        template = templates[page]()
       } else {
         template = oom.span(`"${page}" - Страница пока пуста`)
       }
