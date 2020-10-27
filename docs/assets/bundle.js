@@ -1,6 +1,6 @@
 ---
----
-{% capture build_number %}{{ site.github.build_revision }}{{ site.time | date: '%Y%m%d%H%M%S' }}{% endcapture %}
+  ---
+  {% capture build_number %}{ { site.github.build_revision } } { { site.time | date: '%Y%m%d%H%M%S' } } {% endcapture %}
 import { oom, pako, QRCode, ZXing, Dexie } from './external.js?v={{ build_number }}';
 import { MDCDrawer, MDCTopAppBar, MDCRipple, MDCSelect } from './mdc.js?v={{ build_number }}';
 
@@ -163,9 +163,8 @@ oom.define(class Q3SEditorController extends HTMLElement {
   static tagName = 'q3s-editor-controller'
   static typeSelectItems = [...DataTypes.entries()].reduce((container, [key, type]) => container
     .li({
-      'class': 'mdc-list-item mdc-list-item--selected',
-      'data-value': key,
-      'aria-selected': 'true'
+      'class': 'mdc-list-item',
+      'data-value': key
     }, oom
       .span({ class: 'mdc-list-item__ripple' })
       .span(type.title, { class: 'mdc-list-item__text' })), oom())
@@ -192,11 +191,6 @@ oom.define(class Q3SEditorController extends HTMLElement {
       .span({ class: 'mdc-line-ripple' }))
     .div({ class: 'mdc-select__menu mdc-menu mdc-menu-surface mdc-menu-surface--fullwidth' }, oom
       .ul({ class: 'mdc-list' }, oom
-        .li({
-          'class': 'mdc-list-item mdc-list-item--selected',
-          'data-value': '',
-          'aria-selected': 'true'
-        }, oom.span({ class: 'mdc-list-item__ripple' }))
         .append(Q3SEditorController.typeSelectItems.clone())
       )), select => { this._typeSelect = select; })
   connectedCallback() {
