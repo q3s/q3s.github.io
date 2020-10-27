@@ -1,6 +1,6 @@
 ---
-  ---
-  {% capture build_number %}{ { site.github.build_revision } } { { site.time | date: '%Y%m%d%H%M%S' } } {% endcapture %}
+---
+{% capture build_number %}{{ site.github.build_revision }}{{ site.time | date: '%Y%m%d%H%M%S' }}{% endcapture %}
 import { oom, pako, QRCode, ZXing, Dexie } from './external.js?v={{ build_number }}';
 import { MDCDrawer, MDCTopAppBar, MDCRipple, MDCSelect } from './mdc.js?v={{ build_number }}';
 
