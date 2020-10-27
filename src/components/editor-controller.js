@@ -1,9 +1,20 @@
 import { MDCSelect } from '@material/select'
 import { oom } from '@notml/core'
+import { DataTypes } from '../../lib/datamodel.js'
+
 
 oom.define(class Q3SEditorController extends HTMLElement {
 
   static tagName = 'q3s-editor-controller'
+
+  static typeSelectItems = [...DataTypes.entries()].reduce((container, [key, type]) => container
+    .li({
+      'class': 'mdc-list-item mdc-list-item--selected',
+      'data-value': key,
+      'aria-selected': 'true'
+    }, oom
+      .span({ class: 'mdc-list-item__ripple' })
+      .span(type.title, { class: 'mdc-list-item__text' })), oom())
 
   template = () => oom.div({ class: 'mdc-select mdc-select--filled' }, oom
     .div({ class: 'mdc-select__anchor' }, oom
@@ -33,13 +44,7 @@ oom.define(class Q3SEditorController extends HTMLElement {
           'data-value': '',
           'aria-selected': 'true'
         }, oom.span({ class: 'mdc-list-item__ripple' }))
-        .li({
-          'class': 'mdc-list-item mdc-list-item--selected',
-          'data-value': 'text',
-          'aria-selected': 'true'
-        }, oom
-          .span({ class: 'mdc-list-item__ripple' })
-          .span('Текст', { class: 'mdc-list-item__text' }))
+        .append(Q3SEditorController.typeSelectItems.clone())
       )), select => { this._typeSelect = select })
 
   connectedCallback() {

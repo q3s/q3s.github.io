@@ -121,8 +121,54 @@ window.addEventListener('hashchange', () => { q3sDrawer.open = false; }, false);
 
 MDCRipple.attachTo(document.querySelector('.q3s-code-scanner__button'));
 
+class SimpleTextModel {
+}
+class MarkdownModel extends SimpleTextModel {
+}
+class URLModel {
+}
+class JSONModel {
+}
+class RemoteJSONModel extends URLModel {
+}
+const DataTypes = new Map([
+  ['st', {
+    name: 'SimpleText',
+    title: 'Простой текст',
+    model: SimpleTextModel
+  }],
+  ['md', {
+    name: 'Markdown',
+    title: 'Форматированный текст (Markdown)',
+    model: MarkdownModel
+  }],
+  ['url', {
+    name: 'URL',
+    title: 'Ссылка',
+    model: URLModel
+  }],
+  ['json', {
+    name: 'JSON',
+    title: 'Простой объект данных (JSON)',
+    model: JSONModel
+  }],
+  ['rjson', {
+    name: 'RemoteJSON',
+    title: 'Данные с внешнего источника (JSON)',
+    model: RemoteJSONModel
+  }]
+]);
+
 oom.define(class Q3SEditorController extends HTMLElement {
   static tagName = 'q3s-editor-controller'
+  static typeSelectItems = [...DataTypes.entries()].reduce((container, [key, type]) => container
+    .li({
+      'class': 'mdc-list-item mdc-list-item--selected',
+      'data-value': key,
+      'aria-selected': 'true'
+    }, oom
+      .span({ class: 'mdc-list-item__ripple' })
+      .span(type.title, { class: 'mdc-list-item__text' })), oom())
   template = () => oom.div({ class: 'mdc-select mdc-select--filled' }, oom
     .div({ class: 'mdc-select__anchor' }, oom
       .span({ class: 'mdc-select__ripple' })
@@ -151,13 +197,7 @@ oom.define(class Q3SEditorController extends HTMLElement {
           'data-value': '',
           'aria-selected': 'true'
         }, oom.span({ class: 'mdc-list-item__ripple' }))
-        .li({
-          'class': 'mdc-list-item mdc-list-item--selected',
-          'data-value': 'text',
-          'aria-selected': 'true'
-        }, oom
-          .span({ class: 'mdc-list-item__ripple' })
-          .span('Текст', { class: 'mdc-list-item__text' }))
+        .append(Q3SEditorController.typeSelectItems.clone())
       )), select => { this._typeSelect = select; })
   connectedCallback() {
     const select = new MDCSelect(this._typeSelect);
