@@ -22,13 +22,17 @@
     "sass": "latest",
     "pako": "^1.0.11",
     "qrcode": "^1.4.4",
-    "@zxing/library": "^0.17.1",
+    "@zxing/library": "^0.18.2",
     "dexie": "^3.0.2",
     "@material/theme": "^7.0.0",
     "@material/icon-button": "^7.0.0",
     "@material/top-app-bar": "^7.0.0",
     "@material/drawer": "^7.0.0",
-    "@material/list": "^7.0.0"
+    "@material/list": "^7.0.0",
+    "@material/fab": "^7.0.0",
+    "@material/ripple": "^7.0.0",
+    "@material/textfield": "^7.0.0",
+    "@material/select": "^7.0.0"
   },
   "scripts": {
     "test": "node test",

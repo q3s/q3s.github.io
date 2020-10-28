@@ -8,8 +8,18 @@ html {
 body {
   margin: 0;
 }
+q3s-navigation-router {
+  display: contents;
+}
 
-.navigation-drawer__logo {
+q3s-navigation-container {
+  display: none;
+}
+
+q3s-navigation-container[activated] {
+  display: contents;
+}
+.q3s-navigation-drawer__logo {
   background-image: url("/assets/svg/favicon.svg?v={{ build_number }}");
   background-size: 40px;
   background-repeat: no-repeat;
@@ -17,13 +27,33 @@ body {
   background-position: 16px 18px;
 }
 
-.navigation-menu__content {
+.q3s-navigation-drawer__menu-content {
   display: flex;
 }
 
-.navigation-menu__list {
+.q3s-navigation-drawer__menu-list {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   flex-grow: 1;
+}
+.q3s-code-scanner__button-container {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+}
+
+.q3s-code-scanner__button .mdc-fab__icon {
+  width: 28px;
+  height: 28px;
+  font-size: 28px;
+}
+q3s-main-content-controller {
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem;
+}
+q3s-editor-controller {
+  display: flex;
+  flex-direction: column;
 }

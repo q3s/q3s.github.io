@@ -1,0 +1,11 @@
+q3s-navigation-router {
+  display: contents;
+}
+
+q3s-navigation-container {
+  display: none;
+}
+
+q3s-navigation-container[activated] {
+  display: contents;
+}

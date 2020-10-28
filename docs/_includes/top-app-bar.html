@@ -1,0 +1,41 @@
+<header class="mdc-top-app-bar mdc-top-app-bar--dense q3s-top-app-bar">
+  <div class="mdc-top-app-bar__row">
+    <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
+      <button class="material-icons mdc-top-app-bar__navigation-icon mdc-icon-button">menu</button>
+      <q3s-navigation-container exclude="#,#scanner">
+        <a class="material-icons mdc-top-app-bar__action-item mdc-icon-button" href="#">navigate_before</a>
+      </q3s-navigation-container>
+      <q3s-navigation-container activated include="#">
+        <span class="mdc-top-app-bar__title">QR Share</span>
+      </q3s-navigation-container>
+      <q3s-navigation-container include="#filter">
+        <span class="mdc-top-app-bar__title">Параметры фильтрации</span>
+      </q3s-navigation-container>
+      <q3s-navigation-container include="#categories">
+        <span class="mdc-top-app-bar__title">Категории</span>
+      </q3s-navigation-container>
+      <q3s-navigation-container include="#add">
+        <span class="mdc-top-app-bar__title">Создать код</span>
+      </q3s-navigation-container>
+      <q3s-navigation-container include="#settings">
+        <span class="mdc-top-app-bar__title">Настройки</span>
+      </q3s-navigation-container>
+      <q3s-navigation-container include="#security">
+        <span class="mdc-top-app-bar__title">Конфиденциальность</span>
+      </q3s-navigation-container>
+      <q3s-navigation-container include="#feedback">
+        <span class="mdc-top-app-bar__title">Обратная связь</span>
+      </q3s-navigation-container>
+    </section>
+    <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-end">
+      <q3s-navigation-container activated include="#">
+        <a class="material-icons mdc-top-app-bar__action-item mdc-icon-button" href="#filter">filter_alt</a>
+      </q3s-navigation-container>
+      <q3s-navigation-container include="#filter">
+        <a class="material-icons mdc-top-app-bar__action-item mdc-icon-button q3s-filter-done" href="#">done</a>
+        <a class="material-icons mdc-top-app-bar__action-item mdc-icon-button q3s-filter-close" href="#">close</a>
+      </q3s-navigation-container>
+    </section>
+  </div>
+</header>
+<div class="mdc-top-app-bar--dense-fixed-adjust"></div>

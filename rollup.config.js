@@ -21,8 +21,12 @@ export default [{
     alias({
       entries: [
         { find: '../external.js', replacement: '__external__' },
+        { find: '@notml/core', replacement: '__external__' },
         { find: '@material/top-app-bar', replacement: '__mdc__' },
-        { find: '@material/drawer', replacement: '__mdc__' }
+        { find: '@material/drawer', replacement: '__mdc__' },
+        { find: '@material/ripple', replacement: '__mdc__' },
+        { find: '@material/select', replacement: '__mdc__' },
+        { find: '@material/textfield', replacement: '__mdc__' }
       ]
     }),
     replace({

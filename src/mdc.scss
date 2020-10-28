@@ -9,8 +9,20 @@
 @use "@material/top-app-bar/mdc-top-app-bar";
 @use "@material/drawer";
 @use "@material/list";
+@use "@material/fab";
+
+@use "@material/menu-surface/mdc-menu-surface";
+@use "@material/menu/mdc-menu";
+@use "@material/select/mdc-select";
+
+@use "@material/floating-label/mdc-floating-label";
+@use "@material/line-ripple/mdc-line-ripple";
+@use "@material/notched-outline/mdc-notched-outline";
+@use "@material/textfield";
 
 @include icon-button.core-styles;
 @include drawer.core-styles;
 @include drawer.modal-core-styles;
 @include list.core-styles;
+@include fab.core-styles;
+@include textfield.core-styles;
