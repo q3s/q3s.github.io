@@ -1,0 +1,21 @@
+{% capture build_number %}{{ site.github.build_revision }}{{ site.time | date: '%Y%m%d%H%M%S' }}{% endcapture %}
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#000051">
+  <link rel="icon" type="image/svg+xml" href="/assets/svg/favicon.svg?v={{ build_number }}">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+  <link href="/assets/bundle.css?v={{ build_number }}" rel="stylesheet">
+  <title>QR Share</title>
+</head>
+
+<body>
+  {{ content }}
+</body>
+
+<script src="/assets/check-and-redirect.js?v={{ build_number }}"></script>
+
+</html>

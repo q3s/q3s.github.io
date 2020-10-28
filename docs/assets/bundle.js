@@ -96,15 +96,17 @@ function updateItemActivated() {
   if (itemActivated) {
     itemActivated.classList.remove('mdc-list-item--activated');
   }
-  if ((/#\w*/).test(location$2.hash)) {
-    const newItemActivated = document.querySelector(`.mdc-list-item[href="${location$2.hash}"]`);
+  if ((/#\w*/).test(location$2.hash || '#')) {
+    const newItemActivated = document.querySelector(`.mdc-list-item[href="${location$2.hash || '#'}"]`);
     if (newItemActivated) {
       newItemActivated.classList.add('mdc-list-item--activated');
     }
   }
 }
 window.addEventListener('hashchange', updateItemActivated, false);
-updateItemActivated();
+window.addEventListener('MDCDrawer:opened', () => {
+  updateItemActivated();
+});
 window.addEventListener('MDCDrawer:closed', () => {
   const firstInpt = q3sMainContent.querySelector('input, button');
   if (firstInpt) {

@@ -1,6 +1,7 @@
 import { MDCSelect } from '@material/select'
 import { oom } from '@notml/core'
 import { DataTypes } from '../../lib/datamodel.js'
+import './editor-controller.scss'
 
 
 oom.define(class Q3SEditorController extends HTMLElement {

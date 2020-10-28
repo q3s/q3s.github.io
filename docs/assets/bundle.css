@@ -53,3 +53,7 @@ q3s-main-content-controller {
   flex-direction: column;
   padding: 0.5rem;
 }
+q3s-editor-controller {
+  display: flex;
+  flex-direction: column;
+}

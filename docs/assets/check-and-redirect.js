@@ -5,14 +5,30 @@
       typeof window.customElements === 'object' &&
       typeof window.customElements.define === 'function' &&
       typeof window.HTMLElement === 'function';
+    var success = true;
+    var messages = [];
     if (!customElements) {
-      return {
-        success: false,
-        message: 'customElements не поддерживаются'
-      }
+      success = false;
+      messages.push('customElements не поддерживаются');
     }
     try {
-      var testFunction = new Function(
+      var testFunction1 = new Function(
+        'class TestClass {' +
+        '  get(){};' +
+        '  set(){};' +
+        '  test(){};' +
+        '  b(){};' +
+        '}' +
+        'const a = new TestClass()'
+      );
+      testFunction1();
+    } catch (error) {
+      success = false;
+      messages.push('JS классы не поддерживается');
+      messages.push(error.message + '\n' + error.stack);
+    }
+    try {
+      var testFunction2 = new Function(
         'class TestClass {' +
         '  static get(){};' +
         '  static set(){};' +
@@ -20,20 +36,48 @@
         '  get(){};' +
         '  set(){};' +
         '  test(){};' +
+        '  b(){};' +
+        '}' +
+        'const a = new TestClass()'
+      );
+      testFunction2();
+    } catch (error) {
+      success = false;
+      messages.push('Статические методы в JS классах не поддерживается');
+      messages.push(error.message + '\n' + error.stack);
+    }
+    try {
+      var testFunction3 = new Function(
+        'class TestClass {' +
+        '  test(){};' +
+        '  a = 1;' +
+        '  b(){};' +
+        '}' +
+        'const a = new TestClass()'
+      );
+      testFunction3();
+    } catch (error) {
+      success = false;
+      messages.push('Свойства в JS классах не поддерживается');
+      messages.push(error.message + '\n' + error.stack);
+    }
+    try {
+      var testFunction4 = new Function(
+        'class TestClass {' +
+        '  test(){};' +
         '  static a = 1;' +
         '  a = 1;' +
         '  b(){};' +
         '}' +
         'const a = new TestClass()'
       );
-      testFunction();
+      testFunction4();
     } catch (error) {
-      return {
-        success: false,
-        message: error.message + '\n\n' + error.stack
-      }
+      success = false;
+      messages.push('Статические свойства в JS классах не поддерживается');
+      messages.push(error.message + '\n' + error.stack);
     }
-    return { success: true, message: '' }
+    return { success, messages: messages.join('\n\n') }
   };
 })();
 
@@ -44,6 +88,12 @@
     location.href = '/not-supported/';
   } else if (compatible.success && location.pathname === '/not-supported/') {
     location.href = '/';
+  } else if (!compatible.success && location.pathname === '/not-supported/') {
+    document.querySelector('#errorMessages').innerHTML = compatible.messages;
+    document.querySelector('#moreMessages').onclick = () => {
+      document.querySelector('#moreMessages').style.display = 'none';
+      document.querySelector('#errorMessages').style.display = 'inline';
+    };
   }
   if (location.protocol !== 'https:' &&
     location.hostname !== 'localhost' &&
