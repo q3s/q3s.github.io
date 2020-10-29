@@ -61,22 +61,6 @@
       messages.push('Свойства в JS классах не поддерживается');
       messages.push(error.message + '\n' + error.stack);
     }
-    try {
-      var testFunction4 = new Function(
-        'class TestClass {' +
-        '  test(){};' +
-        '  static a = 1;' +
-        '  a = 1;' +
-        '  b(){};' +
-        '}' +
-        'const a = new TestClass()'
-      );
-      testFunction4();
-    } catch (error) {
-      success = false;
-      messages.push('Статические свойства в JS классах не поддерживается');
-      messages.push(error.message + '\n' + error.stack);
-    }
     return { success, messages: messages.join('\n\n') }
   };
 })();

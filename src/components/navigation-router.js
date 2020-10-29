@@ -4,9 +4,7 @@ import './navigation-router.scss'
 const { location } = window
 
 
-oom.define(class Q3SNavigationRouter extends HTMLElement {
-
-  static tagName = 'q3s-navigation-router'
+oom.define('q3s-navigation-router', class Q3SNavigationRouter extends HTMLElement {
 
   all = new Set()
   include = {}
