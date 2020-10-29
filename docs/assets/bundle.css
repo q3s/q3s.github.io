@@ -3,10 +3,12 @@
 {% capture build_number %}{{ site.github.build_revision }}{{ site.time | date: '%Y%m%d%H%M%S' }}{% endcapture %}
 html {
   font-family: "Roboto", sans-serif;
+  height: 100%;
 }
 
 body {
   margin: 0;
+  height: 100%;
 }
 q3s-navigation-router {
   display: contents;
