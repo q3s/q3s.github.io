@@ -8,9 +8,7 @@ const templates = {
 }
 
 
-oom.define(class MainContentController extends HTMLElement {
-
-  static tagName = 'q3s-main-content-controller'
+oom.define('q3s-main-content-controller', class MainContentController extends HTMLElement {
 
   template = oom.div('test')
 

@@ -19,8 +19,7 @@ if ('serviceWorker' in navigator) {
 }
 
 const { location: location$1 } = window;
-oom.define(class Q3SNavigationRouter extends HTMLElement {
-  static tagName = 'q3s-navigation-router'
+oom.define('q3s-navigation-router', class Q3SNavigationRouter extends HTMLElement {
   all = new Set()
   include = {}
   exclude = {}
@@ -161,15 +160,14 @@ const DataTypes = new Map([
   }]
 ]);
 
-oom.define(class Q3SEditorController extends HTMLElement {
-  static tagName = 'q3s-editor-controller'
-  static typeSelectItems = [...DataTypes.entries()].reduce((container, [key, type]) => container
-    .li({
-      'class': 'mdc-list-item',
-      'data-value': key
-    }, oom
-      .span({ class: 'mdc-list-item__ripple' })
-      .span(type.title, { class: 'mdc-list-item__text' })), oom())
+const typeSelectItems = [...DataTypes.entries()].reduce((container, [key, type]) => container
+  .li({
+    'class': 'mdc-list-item',
+    'data-value': key
+  }, oom
+    .span({ class: 'mdc-list-item__ripple' })
+    .span(type.title, { class: 'mdc-list-item__text' })), oom());
+oom.define('q3s-editor-controller', class Q3SEditorController extends HTMLElement {
   template = () => oom.div({ class: 'mdc-select mdc-select--filled' }, oom
     .div({ class: 'mdc-select__anchor' }, oom
       .span({ class: 'mdc-select__ripple' })
@@ -193,7 +191,7 @@ oom.define(class Q3SEditorController extends HTMLElement {
       .span({ class: 'mdc-line-ripple' }))
     .div({ class: 'mdc-select__menu mdc-menu mdc-menu-surface mdc-menu-surface--fullwidth' }, oom
       .ul({ class: 'mdc-list' }, oom
-        .append(Q3SEditorController.typeSelectItems.clone())
+        .append(typeSelectItems.clone())
       )), select => { this._typeSelect = select; })
   connectedCallback() {
     const select = new MDCSelect(this._typeSelect);
@@ -205,8 +203,7 @@ const { location: location$3 } = window;
 const templates = {
   '#add': () => oom('q3s-editor-controller')
 };
-oom.define(class MainContentController extends HTMLElement {
-  static tagName = 'q3s-main-content-controller'
+oom.define('q3s-main-content-controller', class MainContentController extends HTMLElement {
   template = oom.div('test')
   constructor() {
     super();
