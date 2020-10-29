@@ -87,6 +87,35 @@ oom.define('q3s-navigation-router', class Q3SNavigationRouter extends HTMLElemen
   }
 });
 
+const { screen, document: document$1 } = window;
+const swypeStep = (screen.width > screen.height ? screen.height : screen.width) / 15;
+let touchStartX = 0;
+let touchStartY = 0;
+let touchEnd = false;
+document$1.body.addEventListener('touchstart', function touchstart(e) {
+  touchStartX = e.targetTouches[0].clientX;
+  touchStartY = e.targetTouches[0].clientY;
+}, false);
+document$1.body.addEventListener('touchmove', function touchmove(e) {
+  if (!touchEnd) {
+    if (e.targetTouches[0].clientX - touchStartX > swypeStep) {
+      window.dispatchEvent(new Event('touch:swype:left_to_right'));
+      touchEnd = true;
+    } else if (touchStartX - e.targetTouches[0].clientX > swypeStep) {
+      window.dispatchEvent(new Event('touch:swype:right_to_left'));
+      touchEnd = true;
+    } else if (touchStartY - e.targetTouches[0].clientY > swypeStep) {
+      window.dispatchEvent(new Event('touch:swype:bottom_to_up'));
+      touchEnd = true;
+    }
+  }
+}, false);
+document$1.body.addEventListener('touchend', function touchend(e) {
+  touchStartX = 0;
+  touchStartY = 0;
+  touchEnd = false;
+}, false);
+
 const { location: location$2 } = window;
 const q3sDrawer = MDCDrawer.attachTo(document.querySelector('.q3s-navigation-drawer'));
 const q3sMainContent = document.querySelector('.q3s-main-content');
@@ -113,12 +142,36 @@ window.addEventListener('MDCDrawer:closed', () => {
   }
 });
 
+const { location: location$3, history } = window;
 const q3sTopAppBar = MDCTopAppBar.attachTo(document.querySelector('.q3s-top-app-bar'));
 q3sTopAppBar.setScrollTarget(document.querySelector('.q3s-main-content'));
 q3sTopAppBar.listen('MDCTopAppBar:nav', () => {
   q3sDrawer.open = !q3sDrawer.open;
 });
-window.addEventListener('hashchange', () => { q3sDrawer.open = false; }, false);
+window.addEventListener('hashchange', () => {
+  q3sDrawer.open = false;
+}, false);
+window.addEventListener('touch:swype:left_to_right', () => {
+  q3sDrawer.open = true;
+}, false);
+window.addEventListener('touch:swype:right_to_left', e => {
+  if (q3sDrawer.open) {
+    q3sDrawer.open = false;
+  } else {
+    if ((location$3.hash || '#') !== '#') {
+      if (history.length > 1 && location$3.hash === '#scanner') {
+        history.back();
+      } else {
+        window.location = '/#';
+      }
+    }
+  }
+}, false);
+window.addEventListener('touch:swype:bottom_to_up', () => {
+  if (location$3.hash !== '#scanner') {
+    window.location = '/#scanner';
+  }
+}, false);
 
 MDCRipple.attachTo(document.querySelector('.q3s-code-scanner__button'));
 
@@ -199,7 +252,7 @@ oom.define('q3s-editor-controller', class Q3SEditorController extends HTMLElemen
   }
 });
 
-const { location: location$3 } = window;
+const { location: location$4 } = window;
 const templates = {
   '#add': () => oom('q3s-editor-controller')
 };
@@ -209,11 +262,11 @@ oom.define('q3s-main-content-controller', class MainContentController extends HT
     super();
     this.page = null;
     this._navigate = () => {
-      this.navigate(location$3.hash);
+      this.navigate(location$4.hash);
     };
   }
   connectedCallback() {
-    this.navigate(location$3.hash);
+    this.navigate(location$4.hash);
     window.addEventListener('hashchange', this._navigate, false);
   }
   disconnectedCallback() {
