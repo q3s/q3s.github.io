@@ -1,16 +1,16 @@
 import { oom } from '@notml/core'
 import './main-content-controller.scss'
+import '../components/code-scanner.js'
 import '../components/editor-controller.js'
 
 const { location } = window
 const templates = {
+  '#scanner': () => oom('q3s-code-scanner'),
   '#add': () => oom('q3s-editor-controller')
 }
 
 
 oom.define('q3s-main-content-controller', class MainContentController extends HTMLElement {
-
-  template = oom.div('test')
 
   constructor() {
     super()

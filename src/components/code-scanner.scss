@@ -1,0 +1,10 @@
+q3s-code-scanner {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+.q3s-code-scanner__card,
+.q3s-code-scanner__video {
+  background-color: black;
+}

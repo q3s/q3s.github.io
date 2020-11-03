@@ -183,6 +183,11 @@ window.addEventListener('touch:swype:bottom_to_up', () => {
 
 MDCRipple.attachTo(document.querySelector('.q3s-code-scanner__button'));
 
+oom.define('q3s-code-scanner', class Q3SCodeScanner extends HTMLElement {
+  template = () => oom.div({ class: 'mdc-card q3s-code-scanner__card' }, oom
+    .video({ class: 'q3s-code-scanner__video' }))
+});
+
 class SimpleTextModel {
 }
 class MarkdownModel extends SimpleTextModel {
@@ -262,10 +267,10 @@ oom.define('q3s-editor-controller', class Q3SEditorController extends HTMLElemen
 
 const { location: location$4 } = window;
 const templates = {
+  '#scanner': () => oom('q3s-code-scanner'),
   '#add': () => oom('q3s-editor-controller')
 };
 oom.define('q3s-main-content-controller', class MainContentController extends HTMLElement {
-  template = oom.div('test')
   constructor() {
     super();
     this.page = null;
