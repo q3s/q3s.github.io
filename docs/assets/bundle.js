@@ -190,7 +190,7 @@ oom.define('q3s-code-scanner', class Q3SCodeScanner extends HTMLElement {
     .video({ class: 'q3s-code-scanner__video' }, elm => { this._videoElm = elm; }), elm => { this._card = elm; })
   connectedCallback() {
     try {
-      this._codeReader.decodeFromConstraints(this._videoConstraints, this._video,
+      this._codeReader.decodeFromConstraints(this._videoConstraints, this._videoElm,
         (result, error) => {
           if (result) {
             alert(result);
