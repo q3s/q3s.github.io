@@ -14,18 +14,22 @@ oom.define('q3s-code-scanner', class Q3SCodeScanner extends HTMLElement {
     .video({ class: 'q3s-code-scanner__video' }, elm => { this._videoElm = elm }), elm => { this._card = elm })
 
   connectedCallback() {
-    this._codeReader.decodeFromConstraints(this._videoConstraints, this._video,
-      (result, error) => {
-        if (result) {
-          alert(result)
-          this._codeReader.reset()
-        } if (error) {
-          if (!(error instanceof ZXing.NotFoundException)) {
-            this.decodeVideoError(error)
+    try {
+      this._codeReader.decodeFromConstraints(this._videoConstraints, this._video,
+        (result, error) => {
+          if (result) {
+            alert(result)
+            this._codeReader.reset()
+          } if (error) {
+            if (!(error instanceof ZXing.NotFoundException)) {
+              this.decodeVideoError(error)
+            }
           }
         }
-      }
-    ).catch(error => this.decodeVideoError(error))
+      ).catch(error => this.decodeVideoError(error))
+    } catch (error) {
+      this.decodeVideoError(error)
+    }
   }
 
   disconnectedCallback() {
@@ -42,7 +46,7 @@ oom.define('q3s-code-scanner', class Q3SCodeScanner extends HTMLElement {
         .p('Не удалось получить доступ к камере.')
         .p('Вы можете загрузить изображение из галереи.')
         .p('Либо воспользоваться стандартным сканером кодов на вашем устройстве.')
-        .div({ class: 'q3s-code-scanner__hide' }, oom
+        .p({ class: 'q3s-code-scanner__hide' }, oom
           .span({ class: 'q3s-code-scanner__error' }, message), elm => { this._errorElm = elm }))
       .div({ class: 'mdc-card__actions' }, oom
         .button({ class: 'mdc-button mdc-card__action mdc-card__action--button' }, oom
@@ -55,7 +59,7 @@ oom.define('q3s-code-scanner', class Q3SCodeScanner extends HTMLElement {
 
     MDCRipple.attachTo(this._moreErrBtn)
     this._moreErrBtn.onclick = () => {
-      this._errorElm.classList.remove('q3s-code-scanner__error')
+      this._errorElm.classList.toggle('q3s-code-scanner__hide')
     }
 
     this._codeReader.reset()
