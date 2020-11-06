@@ -1,7 +1,7 @@
 ---
 ---
 {% capture build_number %}{{ site.github.build_revision }}{{ site.time | date: '%Y%m%d%H%M%S' }}{% endcapture %}
-import { oom, pako, QRCode, ZXing, Dexie } from './external.js?v={{ build_number }}';
+import { oom, ZXing, pako, QRCode, Dexie } from './external.js?v={{ build_number }}';
 import { MDCDrawer, MDCTopAppBar, MDCRipple, MDCSelect } from './mdc.js?v={{ build_number }}';
 
 const { navigator, location } = window;
@@ -184,8 +184,26 @@ window.addEventListener('touch:swype:bottom_to_up', () => {
 MDCRipple.attachTo(document.querySelector('.q3s-code-scanner__button'));
 
 oom.define('q3s-code-scanner', class Q3SCodeScanner extends HTMLElement {
+  _videoConstraints = { video: { facingMode: 'environment' } }
+  _codeReader = new ZXing.BrowserMultiFormatReader()
   template = () => oom.div({ class: 'mdc-card q3s-code-scanner__card' }, oom
-    .video({ class: 'q3s-code-scanner__video' }))
+    .video({ class: 'q3s-code-scanner__video' }, elm => { this._videoElm = elm; }))
+  connectedCallback() {
+    this._codeReader.decodeFromConstraints(this._videoConstraints, this._video,
+      (result, error) => {
+        if (result) {
+          alert(result);
+          this._codeReader.reset();
+        } if (error && !(error instanceof ZXing.NotFoundException)) {
+          alert(error + '\n\n' + error.stack);
+          this._codeReader.reset();
+        }
+      }
+    );
+  }
+  disconnectedCallback() {
+    this._codeReader.reset();
+  }
 });
 
 class SimpleTextModel {
