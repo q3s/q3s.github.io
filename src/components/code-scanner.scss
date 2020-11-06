@@ -4,9 +4,13 @@ q3s-code-scanner {
   justify-content: space-around;
 }
 
-.q3s-code-scanner__card,
+.q3s-code-scanner__card--video,
 .q3s-code-scanner__video {
   background-color: black;
+}
+
+.q3s-code-scanner__card-content {
+  padding: 16px;
 }
 
 .q3s-code-scanner__hide {
