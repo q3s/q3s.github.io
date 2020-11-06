@@ -8,3 +8,13 @@ q3s-code-scanner {
 .q3s-code-scanner__video {
   background-color: black;
 }
+
+.q3s-code-scanner__hide {
+  display: none;
+}
+
+.q3s-code-scanner__error{
+  white-space: pre-wrap;
+  word-break: break-all;
+  color: #B22222;
+}
