@@ -55,6 +55,38 @@ q3s-main-content-controller {
   flex-direction: column;
   padding: 0.5rem;
 }
+q3s-code-scanner {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+.q3s-code-scanner__card--video,
+.q3s-code-scanner__video {
+  background-color: black;
+}
+
+.q3s-code-scanner__card-content {
+  padding: 16px;
+}
+
+.q3s-code-scanner__card-content p:first-child {
+  margin-top: 0;
+}
+
+.q3s-code-scanner__card-content p:last-child {
+  margin-bottom: 0;
+}
+
+.q3s-code-scanner__hide {
+  display: none;
+}
+
+.q3s-code-scanner__error {
+  white-space: pre-wrap;
+  word-break: break-all;
+  color: #B22222;
+}
 q3s-editor-controller {
   display: flex;
   flex-direction: column;

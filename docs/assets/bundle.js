@@ -1,7 +1,7 @@
 ---
 ---
 {% capture build_number %}{{ site.github.build_revision }}{{ site.time | date: '%Y%m%d%H%M%S' }}{% endcapture %}
-import { oom, pako, QRCode, ZXing, Dexie } from './external.js?v={{ build_number }}';
+import { oom, ZXing, pako, QRCode, Dexie } from './external.js?v={{ build_number }}';
 import { MDCDrawer, MDCTopAppBar, MDCRipple, MDCSelect } from './mdc.js?v={{ build_number }}';
 
 const { navigator, location } = window;
@@ -183,6 +183,59 @@ window.addEventListener('touch:swype:bottom_to_up', () => {
 
 MDCRipple.attachTo(document.querySelector('.q3s-code-scanner__button'));
 
+oom.define('q3s-code-scanner', class Q3SCodeScanner extends HTMLElement {
+  _videoConstraints = { video: { facingMode: 'environment' } }
+  _codeReader = new ZXing.BrowserMultiFormatReader()
+  template = () => oom.div({ class: 'mdc-card q3s-code-scanner__card q3s-code-scanner__card--video' }, oom
+    .video({ class: 'q3s-code-scanner__video' }, elm => { this._videoElm = elm; }), elm => { this._card = elm; })
+  connectedCallback() {
+    try {
+      this._codeReader.decodeFromConstraints(this._videoConstraints, this._video,
+        (result, error) => {
+          if (result) {
+            alert(result);
+            this._codeReader.reset();
+          } if (error) {
+            if (!(error instanceof ZXing.NotFoundException)) {
+              this.decodeVideoError(error);
+            }
+          }
+        }
+      ).catch(error => this.decodeVideoError(error));
+    } catch (error) {
+      this.decodeVideoError(error);
+    }
+  }
+  disconnectedCallback() {
+    this._codeReader.reset();
+    if (this._moreErrBtn) {
+      delete this._moreErrBtn.onclick;
+    }
+  }
+  decodeVideoError(error) {
+    const message = error + '\n' + (error.stack || '');
+    const content = oom()
+      .div({ class: 'q3s-code-scanner__card-content' }, oom
+        .p('Не удалось получить доступ к камере.')
+        .p('Вы можете загрузить изображение из галереи.')
+        .p('Либо воспользоваться стандартным сканером кодов на вашем устройстве.')
+        .p({ class: 'q3s-code-scanner__hide' }, oom
+          .span({ class: 'q3s-code-scanner__error' }, message), elm => { this._errorElm = elm; }))
+      .div({ class: 'mdc-card__actions' }, oom
+        .button({ class: 'mdc-button mdc-card__action mdc-card__action--button' }, oom
+          .div({ class: 'mdc-button__ripple' })
+          .span({ class: 'mdc-button__label' }, 'Подробнее...')), elm => { this._moreErrBtn = elm; });
+    this._card.innerHTML = '';
+    this._card.classList.remove('q3s-code-scanner__card--video');
+    this._card.append(content.dom);
+    MDCRipple.attachTo(this._moreErrBtn);
+    this._moreErrBtn.onclick = () => {
+      this._errorElm.classList.toggle('q3s-code-scanner__hide');
+    };
+    this._codeReader.reset();
+  }
+});
+
 class SimpleTextModel {
 }
 class MarkdownModel extends SimpleTextModel {
@@ -262,10 +315,10 @@ oom.define('q3s-editor-controller', class Q3SEditorController extends HTMLElemen
 
 const { location: location$4 } = window;
 const templates = {
+  '#scanner': () => oom('q3s-code-scanner'),
   '#add': () => oom('q3s-editor-controller')
 };
 oom.define('q3s-main-content-controller', class MainContentController extends HTMLElement {
-  template = oom.div('test')
   constructor() {
     super();
     this.page = null;
