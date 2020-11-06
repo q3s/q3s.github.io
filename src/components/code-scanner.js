@@ -18,12 +18,17 @@ oom.define('q3s-code-scanner', class Q3SCodeScanner extends HTMLElement {
         if (result) {
           alert(result)
           this._codeReader.reset()
-        } if (error && !(error instanceof ZXing.NotFoundException)) {
-          alert(error + '\n\n' + error.stack)
-          this._codeReader.reset()
+        } if (error) {
+          if (!(error instanceof ZXing.NotFoundException)) {
+            alert(error + '\n\n' + (error.stack || ''))
+            this._codeReader.reset()
+          }
         }
       }
-    )
+    ).catch(error => {
+      alert(error + '\n' + (error.stack || ''))
+      this._codeReader.reset()
+    })
   }
 
   disconnectedCallback() {
