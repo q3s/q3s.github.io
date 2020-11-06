@@ -10,6 +10,7 @@
 @use "@material/drawer";
 @use "@material/list";
 @use "@material/fab";
+@use "@material/button";
 @use "@material/card";
 
 @use "@material/menu-surface/mdc-menu-surface";
@@ -26,5 +27,6 @@
 @include drawer.modal-core-styles;
 @include list.core-styles;
 @include fab.core-styles;
+@include button.core-styles;
 @include card.core-styles;
 @include textfield.core-styles;

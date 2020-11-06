@@ -32,6 +32,7 @@
     "@material/card": "^8.0.0",
     "@material/fab": "^8.0.0",
     "@material/ripple": "^8.0.0",
+    "@material/button": "^8.0.0",
     "@material/textfield": "^8.0.0",
     "@material/select": "^8.0.0"
   },
