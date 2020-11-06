@@ -57,7 +57,7 @@ q3s-main-content-controller {
 }
 q3s-code-scanner {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: space-around;
 }
 

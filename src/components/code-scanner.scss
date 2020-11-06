@@ -1,6 +1,6 @@
 q3s-code-scanner {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: space-around;
 }
 
@@ -25,7 +25,7 @@ q3s-code-scanner {
   display: none;
 }
 
-.q3s-code-scanner__error{
+.q3s-code-scanner__error {
   white-space: pre-wrap;
   word-break: break-all;
   color: #B22222;
