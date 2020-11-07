@@ -9,6 +9,8 @@ html {
 body {
   margin: 0;
   height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 q3s-navigation-router {
   display: contents;
@@ -56,6 +58,12 @@ q3s-main-content-controller {
   padding: 0.5rem;
 }
 q3s-code-scanner {
+  position: absolute;
+  left: 0.5rem;
+  right: 0.5rem;
+  bottom: 0.5rem;
+  top: calc(48px + 0.5rem);
+  overflow: hidden;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
