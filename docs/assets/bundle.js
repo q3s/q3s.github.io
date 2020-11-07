@@ -183,6 +183,7 @@ window.addEventListener('touch:swype:bottom_to_up', () => {
 
 MDCRipple.attachTo(document.querySelector('.q3s-code-scanner__button'));
 
+const { navigator: navigator$1 } = window;
 oom.define('q3s-code-scanner', class Q3SCodeScanner extends HTMLElement {
   _videoConstraints = { video: { facingMode: 'environment' } }
   _codeReader = new ZXing.BrowserMultiFormatReader()
@@ -190,10 +191,37 @@ oom.define('q3s-code-scanner', class Q3SCodeScanner extends HTMLElement {
     .div({ class: 'q3s-code-scanner__video-container' }, oom
       .video({ class: 'q3s-code-scanner__video' }, elm => { this._videoElm = elm; }))
   connectedCallback() {
+    this.startVideo();
   }
   disconnectedCallback() {
+    this.stopVideo();
     if (this._moreErrBtn) {
       delete this._moreErrBtn.onclick;
+    }
+  }
+  startVideo() {
+    try {
+      navigator$1.mediaDevices.getUserMedia(this._videoConstraints)
+        .then(stream => {
+          [this._videoTrack] = stream.getTracks();
+          if (this.isConnected) {
+            debugger
+            this._videoElm.srcObject = stream;
+            this._videoElm.play();
+          } else {
+            this.stopVideo();
+          }
+        })
+        .catch(error => this.decodeVideoError(error));
+    } catch (error) {
+      this.decodeVideoError(error);
+    }
+  }
+  stopVideo() {
+    if (this._videoTrack) {
+      this._videoTrack.stop();
+      this._videoTrack = null;
+      this._videoElm.srcObject = null;
     }
   }
   decodeVideoError(error) {

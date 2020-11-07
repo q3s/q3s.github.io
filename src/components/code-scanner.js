@@ -3,6 +3,7 @@ import { ZXing } from '@zxing/library'
 import { MDCRipple } from '@material/ripple'
 import './code-scanner.scss'
 
+const { navigator } = window
 
 oom.define('q3s-code-scanner', class Q3SCodeScanner extends HTMLElement {
 
@@ -17,6 +18,7 @@ oom.define('q3s-code-scanner', class Q3SCodeScanner extends HTMLElement {
   //   .div(), elm => { this._card = elm })
 
   connectedCallback() {
+    this.startVideo()
     // try {
     //   this._codeReader.decodeFromConstraints(this._videoConstraints, this._videoElm,
     //     (result, error) => {
@@ -36,9 +38,37 @@ oom.define('q3s-code-scanner', class Q3SCodeScanner extends HTMLElement {
   }
 
   disconnectedCallback() {
+    this.stopVideo()
     // this._codeReader.reset()
     if (this._moreErrBtn) {
       delete this._moreErrBtn.onclick
+    }
+  }
+
+  startVideo() {
+    try {
+      navigator.mediaDevices.getUserMedia(this._videoConstraints)
+        .then(stream => {
+          [this._videoTrack] = stream.getTracks()
+          if (this.isConnected) {
+            debugger
+            this._videoElm.srcObject = stream
+            this._videoElm.play()
+          } else {
+            this.stopVideo()
+          }
+        })
+        .catch(error => this.decodeVideoError(error))
+    } catch (error) {
+      this.decodeVideoError(error)
+    }
+  }
+
+  stopVideo() {
+    if (this._videoTrack) {
+      this._videoTrack.stop()
+      this._videoTrack = null
+      this._videoElm.srcObject = null
     }
   }
 

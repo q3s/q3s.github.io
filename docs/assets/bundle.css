@@ -65,11 +65,16 @@ q3s-code-scanner {
 
 .q3s-code-scanner__video-container {
   position: absolute;
-  left: 0.5rem;
-  right: 0.5rem;
-  bottom: 0.5rem;
-  top: calc(48px + 0.5rem);
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 48px;
   overflow: hidden;
+}
+
+.q3s-code-scanner__video {
+  min-width: 100%;
+  min-height: 100%;
 }
 
 .q3s-code-scanner__card-content {
