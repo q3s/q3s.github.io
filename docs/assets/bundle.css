@@ -56,23 +56,20 @@ q3s-main-content-controller {
   display: flex;
   flex-direction: column;
   padding: 0.5rem;
+  flex-grow: 1;
 }
 q3s-code-scanner {
+  display: flex;
+  flex-direction: column;
+}
+
+.q3s-code-scanner__video-container {
   position: absolute;
   left: 0.5rem;
   right: 0.5rem;
   bottom: 0.5rem;
   top: calc(48px + 0.5rem);
   overflow: hidden;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-}
-
-.q3s-code-scanner__card--video,
-.q3s-code-scanner__video {
-  background-color: black;
-  max-width: 100%;
 }
 
 .q3s-code-scanner__card-content {

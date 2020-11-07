@@ -186,28 +186,12 @@ MDCRipple.attachTo(document.querySelector('.q3s-code-scanner__button'));
 oom.define('q3s-code-scanner', class Q3SCodeScanner extends HTMLElement {
   _videoConstraints = { video: { facingMode: 'environment' } }
   _codeReader = new ZXing.BrowserMultiFormatReader()
-  template = () => oom.div({ class: 'mdc-card q3s-code-scanner__card q3s-code-scanner__card--video' }, oom
-    .video({ class: 'q3s-code-scanner__video' }, elm => { this._videoElm = elm; }), elm => { this._card = elm; })
+  template = () => oom
+    .div({ class: 'q3s-code-scanner__video-container' }, oom
+      .video({ class: 'q3s-code-scanner__video' }, elm => { this._videoElm = elm; }))
   connectedCallback() {
-    try {
-      this._codeReader.decodeFromConstraints(this._videoConstraints, this._videoElm,
-        (result, error) => {
-          if (result) {
-            alert(result);
-            this._codeReader.reset();
-          } if (error) {
-            if (!(error instanceof ZXing.NotFoundException)) {
-              this.decodeVideoError(error);
-            }
-          }
-        }
-      ).catch(error => this.decodeVideoError(error));
-    } catch (error) {
-      this.decodeVideoError(error);
-    }
   }
   disconnectedCallback() {
-    this._codeReader.reset();
     if (this._moreErrBtn) {
       delete this._moreErrBtn.onclick;
     }
