@@ -2,7 +2,8 @@ import { MDCTopAppBar } from '@material/top-app-bar'
 import { q3sDrawer } from './navigation-drawer.js'
 
 const { location, history } = window
-const q3sTopAppBar = MDCTopAppBar.attachTo(document.querySelector('.q3s-top-app-bar'))
+const q3sTopAppBarElm = document.querySelector('.q3s-top-app-bar')
+const q3sTopAppBar = MDCTopAppBar.attachTo(q3sTopAppBarElm)
 
 
 q3sTopAppBar.setScrollTarget(document.querySelector('.q3s-main-content'))
@@ -36,4 +37,12 @@ window.addEventListener('touch:swype:bottom_to_up', () => {
   if (location.hash !== '#scanner') {
     window.location = '/#scanner'
   }
+}, false)
+
+window.addEventListener('q3s-code-scanner:startVideo', () => {
+  q3sTopAppBarElm.classList.add('q3s-primary-bg-opacity')
+}, false)
+
+window.addEventListener('q3s-code-scanner:stopVideo', () => {
+  q3sTopAppBarElm.classList.remove('q3s-primary-bg-opacity')
 }, false)
