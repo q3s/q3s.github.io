@@ -3,17 +3,28 @@ import { ZXing } from '@zxing/library'
 import { MDCRipple } from '@material/ripple'
 import './code-scanner.scss'
 
-const { navigator } = window
+const { document, navigator } = window
 
 oom.define('q3s-code-scanner', class Q3SCodeScanner extends HTMLElement {
 
   _videoConstraints = { video: { facingMode: 'environment' } }
 
   _codeReader = new ZXing.BrowserMultiFormatReader()
+  _canvas = document.createElement('canvas')
+  _context = this._canvas.getContext('2d')
+  _img = document.createElement('img')
 
   _resizeTimeout = null
-  _offsetHeight = 0
-  _offsetWidth = 0
+  _decodeTimeout = null
+  _decodeInterval = 1000
+  _diffHeight = 0
+  _diffWidth = 0
+  _constraintTop = 0
+  _constraintLeft = 0
+  _offsetTop = 0
+  _offsetLeft = 0
+  _constraintHeight = 0
+  _constraintWidth = 0
 
   template = () => oom
     .div({ class: 'q3s-code-scanner__video-container' },
@@ -23,6 +34,19 @@ oom.define('q3s-code-scanner', class Q3SCodeScanner extends HTMLElement {
         ),
       elm => { this._videoContainerElm = elm }
     )
+    .div({ class: 'q3s-code-scanner__capture-area-container' }, oom
+      .div({ class: 'q3s-code-scanner__capture-area-constraint-bg' },
+        elm => { this._constraintBGElm = elm })
+      .div({ class: 'q3s-code-scanner__capture-area-constraint-bg' })
+      .div({ class: 'q3s-code-scanner__capture-area-constraint-bg' })
+      .div({ class: 'q3s-code-scanner__capture-area-constraint-bg' })
+      .div({ class: 'q3s-code-scanner__capture-area' },
+        elm => { this._captureAreaElm = elm })
+      .div({ class: 'q3s-code-scanner__capture-area-constraint-bg' })
+      .div({ class: 'q3s-code-scanner__capture-area-constraint-bg' })
+      .div({ class: 'q3s-code-scanner__capture-area-constraint-bg testResultElm' },
+        elm => { this.testResultElm = elm })
+      .div({ class: 'q3s-code-scanner__capture-area-constraint-bg' }))
 
   constructor() {
     super()
@@ -32,22 +56,6 @@ oom.define('q3s-code-scanner', class Q3SCodeScanner extends HTMLElement {
   connectedCallback() {
     this.startVideo()
     window.addEventListener('resize', this._onResize, false)
-    // try {
-    //   this._codeReader.decodeFromConstraints(this._videoConstraints, this._videoElm,
-    //     (result, error) => {
-    //       if (result) {
-    //         alert(result)
-    //         this._codeReader.reset()
-    //       } if (error) {
-    //         if (!(error instanceof ZXing.NotFoundException)) {
-    //           this.decodeVideoError(error)
-    //         }
-    //       }
-    //     }
-    //   ).catch(error => this.decodeVideoError(error))
-    // } catch (error) {
-    //   this.decodeVideoError(error)
-    // }
   }
 
   disconnectedCallback() {
@@ -80,6 +88,7 @@ oom.define('q3s-code-scanner', class Q3SCodeScanner extends HTMLElement {
               e.currentTarget.removeEventListener('canplay', _handler)
               self.alignmentVideo()
               window.dispatchEvent(new Event('q3s-code-scanner:startVideo'))
+              self.decodeFromVideo()
             })(this))
           } else {
             this.stopVideo()
@@ -94,31 +103,87 @@ oom.define('q3s-code-scanner', class Q3SCodeScanner extends HTMLElement {
   alignmentVideo() {
     const { clientHeight: chvc, clientWidth: cwvc } = this._videoContainerElm
     const { clientHeight: chv, clientWidth: cwv } = this._videoElm
+    const { height: rh, width: rw } = this._videoTrack.getSettings()
     const diffHeight = (chv - chvc) / 2 ^ 0
     const diffWidth = (cwv - cwvc) / 2 ^ 0
+    const ratioHeight = rh / chv
+    const ratioWidth = rw / cwv
 
     if (diffHeight > 0) {
-      this._offsetHeight = diffHeight
+      this._diffHeight = diffHeight
       this._videoElm.style.marginTop = `-${diffHeight}px`
     } else {
-      this._offsetHeight = 0
+      this._diffHeight = 0
       this._videoElm.style.marginTop = ''
     }
     if (diffWidth > 0) {
-      this._offsetWidth = diffWidth
+      this._diffWidth = diffWidth
       this._videoElm.style.marginLeft = `-${diffWidth}px`
     } else {
-      this._offsetWidth = 0
+      this._diffWidth = 0
       this._videoElm.style.marginLeft = ''
+    }
+
+    this._constraintTop = this._constraintBGElm.clientHeight
+    this._constraintLeft = this._constraintBGElm.clientWidth
+
+    this._constraintHeight = this._captureAreaElm.clientHeight * ratioHeight ^ 0
+    this._constraintWidth = this._captureAreaElm.clientWidth * ratioWidth ^ 0
+    this._offsetTop = (this._diffHeight + this._constraintTop) * ratioHeight ^ 0
+    this._offsetLeft = (this._diffWidth + this._constraintLeft) * ratioWidth ^ 0
+
+    this._canvas.height = this._constraintHeight
+    this._canvas.width = this._constraintWidth
+  }
+
+  decodeFromVideo() {
+    if (this._decodeTimeout) {
+      clearTimeout(this._decodeTimeout)
+    }
+    this._decodeTimeout = setTimeout(() => this._decodeFromVideo(), this._decodeInterval)
+  }
+
+  _decodeFromVideo() {
+    if (this._videoTrack && this._videoElm) {
+      this._context.drawImage(this._videoElm,
+        this._offsetLeft,
+        this._offsetTop,
+        this._constraintWidth,
+        this._constraintHeight,
+        0, 0,
+        this._constraintWidth,
+        this._constraintHeight
+      )
+      this._img.src = this._canvas.toDataURL('image/png')
+      this._codeReader.decodeFromImage(this._img)
+        .then(result => {
+          this.testResultElm.innerHTML = result
+          this.decodeFromVideo()
+        })
+        .catch(error => {
+          if (error instanceof ZXing.NotFoundException) {
+            this.decodeFromVideo()
+          } else {
+            this.videoCameraError(error)
+          }
+        }).then(() => {
+          this._codeReader.reset()
+        })
+    } else {
+      this.stopVideo()
     }
   }
 
   stopVideo() {
+    if (this._decodeTimeout) {
+      clearTimeout(this._decodeTimeout)
+    }
     if (this._videoTrack) {
       this._videoTrack.stop()
       this._videoTrack = null
       this._videoElm.srcObject = null
     }
+    this._codeReader.reset()
     window.dispatchEvent(new Event('q3s-code-scanner:stopVideo'))
   }
 

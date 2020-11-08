@@ -86,6 +86,21 @@ q3s-code-scanner {
   background-color: black;
 }
 
+.q3s-code-scanner__capture-area-container {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  display: grid;
+  grid-template-columns: 1fr calc(100vmin - 6rem) 1fr;
+  grid-template-rows: calc(48px + 1.5rem) calc(100vmin - 6rem) 1fr;
+}
+
+.q3s-code-scanner__capture-area-constraint-bg {
+  background-color: #000a;
+}
+
 .q3s-code-scanner__card-content {
   padding: 16px;
 }
@@ -106,6 +121,13 @@ q3s-code-scanner {
   white-space: pre-wrap;
   word-break: break-all;
   color: #B22222;
+}
+
+.testResultElm {
+  white-space: pre-wrap;
+  word-break: break-all;
+  color: #B22222;
+  padding: 1rem;
 }
 q3s-editor-controller {
   display: flex;
