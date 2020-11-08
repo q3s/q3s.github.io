@@ -202,8 +202,8 @@ oom.define('q3s-code-scanner', class Q3SCodeScanner extends HTMLElement {
   _videoConstraints = { video: { facingMode: 'environment' } }
   _codeReader = new ZXing.BrowserMultiFormatReader()
   _resizeTimeout = null
-  _offsetHeight = 0
-  _offsetWidth = 0
+  _offsetTop = 0
+  _offsetLeft = 0
   _constraintTop = 0
   _constraintLeft = 0
   _constraintHeight = 0
@@ -280,17 +280,17 @@ oom.define('q3s-code-scanner', class Q3SCodeScanner extends HTMLElement {
     const diffHeight = (chv - chvc) / 2 ^ 0;
     const diffWidth = (cwv - cwvc) / 2 ^ 0;
     if (diffHeight > 0) {
-      this._offsetHeight = diffHeight;
+      this._offsetTop = diffHeight;
       this._videoElm.style.marginTop = `-${diffHeight}px`;
     } else {
-      this._offsetHeight = 0;
+      this._offsetTop = 0;
       this._videoElm.style.marginTop = '';
     }
     if (diffWidth > 0) {
-      this._offsetWidth = diffWidth;
+      this._offsetLeft = diffWidth;
       this._videoElm.style.marginLeft = `-${diffWidth}px`;
     } else {
-      this._offsetWidth = 0;
+      this._offsetLeft = 0;
       this._videoElm.style.marginLeft = '';
     }
     this._constraintTop = this._constraintBGElm.clientHeight;
