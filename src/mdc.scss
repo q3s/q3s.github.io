@@ -1,8 +1,9 @@
+@use "./variables";
 @use "@material/theme" with (
-  $primary: #283593,
-  $secondary: #1a237e,
-  $on-primary: #e8eaf6,
-  $on-secondary: #e8eaf6,
+  $primary: variables.$primary,
+  $secondary: variables.$secondary,
+  $on-primary: variables.$on-primary,
+  $on-secondary: variables.$on-secondary,
 );
 
 @use "@material/icon-button";

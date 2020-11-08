@@ -12,6 +12,8 @@ oom.define('q3s-code-scanner', class Q3SCodeScanner extends HTMLElement {
   _codeReader = new ZXing.BrowserMultiFormatReader()
 
   _resizeTimeout = null
+  _offsetHeight = 0
+  _offsetWidth = 0
 
   template = () => oom
     .div({ class: 'q3s-code-scanner__video-container' },
@@ -77,6 +79,7 @@ oom.define('q3s-code-scanner', class Q3SCodeScanner extends HTMLElement {
             this._videoElm.addEventListener('canplay', (self => function _handler(e) {
               e.currentTarget.removeEventListener('canplay', _handler)
               self.alignmentVideo()
+              window.dispatchEvent(new Event('q3s-code-scanner:startVideo'))
             })(this))
           } else {
             this.stopVideo()
@@ -95,13 +98,17 @@ oom.define('q3s-code-scanner', class Q3SCodeScanner extends HTMLElement {
     const diffWidth = (cwv - cwvc) / 2 ^ 0
 
     if (diffHeight > 0) {
+      this._offsetHeight = diffHeight
       this._videoElm.style.marginTop = `-${diffHeight}px`
     } else {
+      this._offsetHeight = 0
       this._videoElm.style.marginTop = ''
     }
     if (diffWidth > 0) {
+      this._offsetWidth = diffWidth
       this._videoElm.style.marginLeft = `-${diffWidth}px`
     } else {
+      this._offsetWidth = 0
       this._videoElm.style.marginLeft = ''
     }
   }
@@ -112,6 +119,7 @@ oom.define('q3s-code-scanner', class Q3SCodeScanner extends HTMLElement {
       this._videoTrack = null
       this._videoElm.srcObject = null
     }
+    window.dispatchEvent(new Event('q3s-code-scanner:stopVideo'))
   }
 
   videoCameraError(error) {

@@ -151,7 +151,8 @@ window.addEventListener('MDCDrawer:closed', () => {
 });
 
 const { location: location$3, history } = window;
-const q3sTopAppBar = MDCTopAppBar.attachTo(document.querySelector('.q3s-top-app-bar'));
+const q3sTopAppBarElm = document.querySelector('.q3s-top-app-bar');
+const q3sTopAppBar = MDCTopAppBar.attachTo(q3sTopAppBarElm);
 q3sTopAppBar.setScrollTarget(document.querySelector('.q3s-main-content'));
 q3sTopAppBar.listen('MDCTopAppBar:nav', () => {
   q3sDrawer.open = !q3sDrawer.open;
@@ -180,14 +181,29 @@ window.addEventListener('touch:swype:bottom_to_up', () => {
     window.location = '/#scanner';
   }
 }, false);
+window.addEventListener('q3s-code-scanner:startVideo', () => {
+  q3sTopAppBarElm.classList.add('q3s-primary-bg-opacity');
+}, false);
+window.addEventListener('q3s-code-scanner:stopVideo', () => {
+  q3sTopAppBarElm.classList.remove('q3s-primary-bg-opacity');
+}, false);
 
-MDCRipple.attachTo(document.querySelector('.q3s-code-scanner__button'));
+const buttons = [...document.querySelectorAll('.q3s-code-scanner__button')];
+buttons.map(item => MDCRipple.attachTo(item));
+window.addEventListener('q3s-code-scanner:startVideo', () => {
+  buttons.map(item => { item.classList.add('q3s-secondary-bg-opacity'); });
+}, false);
+window.addEventListener('q3s-code-scanner:stopVideo', () => {
+  buttons.map(item => { item.classList.remove('q3s-secondary-bg-opacity'); });
+}, false);
 
 const { navigator: navigator$1 } = window;
 oom.define('q3s-code-scanner', class Q3SCodeScanner extends HTMLElement {
   _videoConstraints = { video: { facingMode: 'environment' } }
   _codeReader = new ZXing.BrowserMultiFormatReader()
   _resizeTimeout = null
+  _offsetHeight = 0
+  _offsetWidth = 0
   template = () => oom
     .div({ class: 'q3s-code-scanner__video-container' },
       oom
@@ -231,6 +247,7 @@ oom.define('q3s-code-scanner', class Q3SCodeScanner extends HTMLElement {
             this._videoElm.addEventListener('canplay', (self => function _handler(e) {
               e.currentTarget.removeEventListener('canplay', _handler);
               self.alignmentVideo();
+              window.dispatchEvent(new Event('q3s-code-scanner:startVideo'));
             })(this));
           } else {
             this.stopVideo();
@@ -247,13 +264,17 @@ oom.define('q3s-code-scanner', class Q3SCodeScanner extends HTMLElement {
     const diffHeight = (chv - chvc) / 2 ^ 0;
     const diffWidth = (cwv - cwvc) / 2 ^ 0;
     if (diffHeight > 0) {
+      this._offsetHeight = diffHeight;
       this._videoElm.style.marginTop = `-${diffHeight}px`;
     } else {
+      this._offsetHeight = 0;
       this._videoElm.style.marginTop = '';
     }
     if (diffWidth > 0) {
+      this._offsetWidth = diffWidth;
       this._videoElm.style.marginLeft = `-${diffWidth}px`;
     } else {
+      this._offsetWidth = 0;
       this._videoElm.style.marginLeft = '';
     }
   }
@@ -263,6 +284,7 @@ oom.define('q3s-code-scanner', class Q3SCodeScanner extends HTMLElement {
       this._videoTrack = null;
       this._videoElm.srcObject = null;
     }
+    window.dispatchEvent(new Event('q3s-code-scanner:stopVideo'));
   }
   videoCameraError(error) {
     const message = error + '\n' + (error.stack || '');

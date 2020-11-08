@@ -12,6 +12,14 @@ body {
   display: flex;
   flex-direction: column;
 }
+
+.q3s-primary-bg-opacity {
+  background-color: rgba(40, 53, 147, 0.7);
+}
+
+.q3s-secondary-bg-opacity {
+  background-color: rgba(26, 35, 126, 0.7);
+}
 q3s-navigation-router {
   display: contents;
 }
@@ -68,7 +76,7 @@ q3s-code-scanner {
   left: 0;
   right: 0;
   bottom: 0;
-  top: 48px;
+  top: 0;
   overflow: hidden;
 }
 
