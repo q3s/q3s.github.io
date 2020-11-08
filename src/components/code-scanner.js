@@ -44,7 +44,8 @@ oom.define('q3s-code-scanner', class Q3SCodeScanner extends HTMLElement {
         elm => { this._captureAreaElm = elm })
       .div({ class: 'q3s-code-scanner__capture-area-constraint-bg' })
       .div({ class: 'q3s-code-scanner__capture-area-constraint-bg' })
-      .div({ class: 'q3s-code-scanner__capture-area-constraint-bg' })
+      .div({ class: 'q3s-code-scanner__capture-area-constraint-bg testResultElm' },
+        elm => { this.testResultElm = elm })
       .div({ class: 'q3s-code-scanner__capture-area-constraint-bg' }))
 
   constructor() {
@@ -156,7 +157,7 @@ oom.define('q3s-code-scanner', class Q3SCodeScanner extends HTMLElement {
       this._img.src = this._canvas.toDataURL('image/png')
       this._codeReader.decodeFromImage(this._img)
         .then(result => {
-          console.log(result)
+          this.testResultElm.innerHTML = result
           this.decodeFromVideo()
         })
         .catch(error => {
