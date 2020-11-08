@@ -12,6 +12,8 @@ oom.define('q3s-code-scanner', class Q3SCodeScanner extends HTMLElement {
   _codeReader = new ZXing.BrowserMultiFormatReader()
 
   _resizeTimeout = null
+  _decodeTimeout = 1000
+  _decodeInterval = null
   _offsetTop = 0
   _offsetLeft = 0
   _constraintTop = 0
@@ -96,6 +98,10 @@ oom.define('q3s-code-scanner', class Q3SCodeScanner extends HTMLElement {
               e.currentTarget.removeEventListener('canplay', _handler)
               self.alignmentVideo()
               window.dispatchEvent(new Event('q3s-code-scanner:startVideo'))
+              if (self._decodeInterval) {
+                clearInterval(self._decodeInterval)
+              }
+              self._decodeInterval = setInterval(() => self.decodeFromVideo(), self._decodeTimeout)
             })(this))
           } else {
             this.stopVideo()
@@ -134,7 +140,16 @@ oom.define('q3s-code-scanner', class Q3SCodeScanner extends HTMLElement {
     this._constraintWidth = this._captureAreaElm.clientWidth
   }
 
+  decodeFromVideo() {
+    if (this._videoTrack && this._videoElm) {
+      debugger
+    }
+  }
+
   stopVideo() {
+    if (this._decodeInterval) {
+      clearInterval(this._decodeInterval)
+    }
     if (this._videoTrack) {
       this._videoTrack.stop()
       this._videoTrack = null
