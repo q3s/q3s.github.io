@@ -3,21 +3,26 @@ import { ZXing } from '@zxing/library'
 import { MDCRipple } from '@material/ripple'
 import './code-scanner.scss'
 
-const { navigator } = window
+const { document, navigator } = window
 
 oom.define('q3s-code-scanner', class Q3SCodeScanner extends HTMLElement {
 
   _videoConstraints = { video: { facingMode: 'environment' } }
 
   _codeReader = new ZXing.BrowserMultiFormatReader()
+  _canvas = document.createElement('canvas')
+  _context = this._canvas.getContext('2d')
+  _img = document.createElement('img')
 
   _resizeTimeout = null
-  _decodeTimeout = 1000
-  _decodeInterval = null
-  _offsetTop = 0
-  _offsetLeft = 0
+  _decodeTimeout = null
+  _decodeInterval = 1000
+  _diffHeight = 0
+  _diffWidth = 0
   _constraintTop = 0
   _constraintLeft = 0
+  _offsetTop = 0
+  _offsetLeft = 0
   _constraintHeight = 0
   _constraintWidth = 0
 
@@ -50,22 +55,6 @@ oom.define('q3s-code-scanner', class Q3SCodeScanner extends HTMLElement {
   connectedCallback() {
     this.startVideo()
     window.addEventListener('resize', this._onResize, false)
-    // try {
-    //   this._codeReader.decodeFromConstraints(this._videoConstraints, this._videoElm,
-    //     (result, error) => {
-    //       if (result) {
-    //         alert(result)
-    //         this._codeReader.reset()
-    //       } if (error) {
-    //         if (!(error instanceof ZXing.NotFoundException)) {
-    //           this.decodeVideoError(error)
-    //         }
-    //       }
-    //     }
-    //   ).catch(error => this.decodeVideoError(error))
-    // } catch (error) {
-    //   this.decodeVideoError(error)
-    // }
   }
 
   disconnectedCallback() {
@@ -98,10 +87,7 @@ oom.define('q3s-code-scanner', class Q3SCodeScanner extends HTMLElement {
               e.currentTarget.removeEventListener('canplay', _handler)
               self.alignmentVideo()
               window.dispatchEvent(new Event('q3s-code-scanner:startVideo'))
-              if (self._decodeInterval) {
-                clearInterval(self._decodeInterval)
-              }
-              self._decodeInterval = setInterval(() => self.decodeFromVideo(), self._decodeTimeout)
+              self.decodeFromVideo()
             })(this))
           } else {
             this.stopVideo()
@@ -116,39 +102,80 @@ oom.define('q3s-code-scanner', class Q3SCodeScanner extends HTMLElement {
   alignmentVideo() {
     const { clientHeight: chvc, clientWidth: cwvc } = this._videoContainerElm
     const { clientHeight: chv, clientWidth: cwv } = this._videoElm
+    const { height: rh, width: rw } = this._videoTrack.getSettings()
     const diffHeight = (chv - chvc) / 2 ^ 0
     const diffWidth = (cwv - cwvc) / 2 ^ 0
+    const ratioHeight = rh / chv
+    const ratioWidth = rw / cwv
 
     if (diffHeight > 0) {
-      this._offsetTop = diffHeight
+      this._diffHeight = diffHeight
       this._videoElm.style.marginTop = `-${diffHeight}px`
     } else {
-      this._offsetTop = 0
+      this._diffHeight = 0
       this._videoElm.style.marginTop = ''
     }
     if (diffWidth > 0) {
-      this._offsetLeft = diffWidth
+      this._diffWidth = diffWidth
       this._videoElm.style.marginLeft = `-${diffWidth}px`
     } else {
-      this._offsetLeft = 0
+      this._diffWidth = 0
       this._videoElm.style.marginLeft = ''
     }
 
     this._constraintTop = this._constraintBGElm.clientHeight
     this._constraintLeft = this._constraintBGElm.clientWidth
-    this._constraintHeight = this._captureAreaElm.clientHeight
-    this._constraintWidth = this._captureAreaElm.clientWidth
+
+    this._constraintHeight = this._captureAreaElm.clientHeight * ratioHeight ^ 0
+    this._constraintWidth = this._captureAreaElm.clientWidth * ratioWidth ^ 0
+    this._offsetTop = (this._diffHeight + this._constraintTop) * ratioHeight ^ 0
+    this._offsetLeft = (this._diffWidth + this._constraintLeft) * ratioWidth ^ 0
+
+    this._canvas.height = this._constraintHeight
+    this._canvas.width = this._constraintWidth
   }
 
   decodeFromVideo() {
+    if (this._decodeTimeout) {
+      clearTimeout(this._decodeTimeout)
+    }
+    this._decodeTimeout = setTimeout(() => this._decodeFromVideo(), this._decodeInterval)
+  }
+
+  _decodeFromVideo() {
     if (this._videoTrack && this._videoElm) {
-      debugger
+      this._context.drawImage(this._videoElm,
+        this._offsetLeft,
+        this._offsetTop,
+        this._constraintWidth,
+        this._constraintHeight,
+        0, 0,
+        this._constraintWidth,
+        this._constraintHeight
+      )
+      this._img.src = this._canvas.toDataURL('image/png')
+      this._codeReader.decodeFromImage(this._img)
+        .then(result => {
+          console.log(result)
+          this.decodeFromVideo()
+        })
+        .catch(error => {
+          if (error instanceof ZXing.NotFoundException) {
+            this.decodeFromVideo()
+          } else {
+            this.videoCameraError(error)
+          }
+        }).then(() => {
+          this._codeReader.reset()
+        })
+    } else {
+      this.stopVideo()
     }
   }
 
   stopVideo() {
-    if (this._decodeInterval) {
-      clearInterval(this._decodeInterval)
+    if (this._decodeTimeout) {
+      clearTimeout(this._decodeTimeout)
     }
     if (this._videoTrack) {
       this._videoTrack.stop()
