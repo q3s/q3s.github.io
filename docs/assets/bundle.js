@@ -284,6 +284,7 @@ oom.define('q3s-code-scanner', class Q3SCodeScanner extends HTMLElement {
       this._videoTrack = null;
       this._videoElm.srcObject = null;
     }
+    this._codeReader.reset();
     window.dispatchEvent(new Event('q3s-code-scanner:stopVideo'));
   }
   videoCameraError(error) {
