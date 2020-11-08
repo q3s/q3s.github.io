@@ -204,6 +204,10 @@ oom.define('q3s-code-scanner', class Q3SCodeScanner extends HTMLElement {
   _resizeTimeout = null
   _offsetHeight = 0
   _offsetWidth = 0
+  _constraintTop = 0
+  _constraintLeft = 0
+  _constraintHeight = 0
+  _constraintWidth = 0
   template = () => oom
     .div({ class: 'q3s-code-scanner__video-container' },
       oom
@@ -213,11 +217,13 @@ oom.define('q3s-code-scanner', class Q3SCodeScanner extends HTMLElement {
       elm => { this._videoContainerElm = elm; }
     )
     .div({ class: 'q3s-code-scanner__capture-area-container' }, oom
+      .div({ class: 'q3s-code-scanner__capture-area-constraint-bg' },
+        elm => { this._constraintBGElm = elm; })
       .div({ class: 'q3s-code-scanner__capture-area-constraint-bg' })
       .div({ class: 'q3s-code-scanner__capture-area-constraint-bg' })
       .div({ class: 'q3s-code-scanner__capture-area-constraint-bg' })
-      .div({ class: 'q3s-code-scanner__capture-area-constraint-bg' })
-      .div({ class: 'q3s-code-scanner__capture-area' })
+      .div({ class: 'q3s-code-scanner__capture-area' },
+        elm => { this._captureAreaElm = elm; })
       .div({ class: 'q3s-code-scanner__capture-area-constraint-bg' })
       .div({ class: 'q3s-code-scanner__capture-area-constraint-bg' })
       .div({ class: 'q3s-code-scanner__capture-area-constraint-bg' })
@@ -287,6 +293,10 @@ oom.define('q3s-code-scanner', class Q3SCodeScanner extends HTMLElement {
       this._offsetWidth = 0;
       this._videoElm.style.marginLeft = '';
     }
+    this._constraintTop = this._constraintBGElm.clientHeight;
+    this._constraintLeft = this._constraintBGElm.clientWidth;
+    this._constraintHeight = this._captureAreaElm.clientHeight;
+    this._constraintWidth = this._captureAreaElm.clientWidth;
   }
   stopVideo() {
     if (this._videoTrack) {
