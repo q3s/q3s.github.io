@@ -93,12 +93,16 @@ q3s-code-scanner {
   bottom: 0;
   top: 0;
   display: grid;
-  grid-template-columns: 1fr calc(100vmin - 6rem) 1fr;
-  grid-template-rows: calc(48px + 1.5rem) calc(100vmin - 6rem) 1fr;
+  grid-template-columns: 1fr calc(100vmin - 12rem) 1fr;
+  grid-template-rows: 8rem calc(100vmin - 12rem) 1fr;
 }
 
 .q3s-code-scanner__capture-area-constraint-bg {
   background-color: #000a;
+}
+
+.q3s-code-scanner__capture-area {
+  border: rgba(255, 255, 255, 0.7) 1px solid;
 }
 
 .q3s-code-scanner__card-content {
