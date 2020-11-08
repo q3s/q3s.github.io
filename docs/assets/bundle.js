@@ -212,6 +212,16 @@ oom.define('q3s-code-scanner', class Q3SCodeScanner extends HTMLElement {
         ),
       elm => { this._videoContainerElm = elm; }
     )
+    .div({ class: 'q3s-code-scanner__capture-area-container' }, oom
+      .div({ class: 'q3s-code-scanner__capture-area-constraint-bg' })
+      .div({ class: 'q3s-code-scanner__capture-area-constraint-bg' })
+      .div({ class: 'q3s-code-scanner__capture-area-constraint-bg' })
+      .div({ class: 'q3s-code-scanner__capture-area-constraint-bg' })
+      .div({ class: 'q3s-code-scanner__capture-area' })
+      .div({ class: 'q3s-code-scanner__capture-area-constraint-bg' })
+      .div({ class: 'q3s-code-scanner__capture-area-constraint-bg' })
+      .div({ class: 'q3s-code-scanner__capture-area-constraint-bg' })
+      .div({ class: 'q3s-code-scanner__capture-area-constraint-bg' }))
   constructor() {
     super();
     this._onResize = () => this.resizeEven();
