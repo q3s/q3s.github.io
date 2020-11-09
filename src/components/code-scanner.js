@@ -7,16 +7,25 @@ const { document, navigator } = window
 
 oom.define('q3s-code-scanner', class Q3SCodeScanner extends HTMLElement {
 
-  _videoConstraints = { video: { facingMode: 'environment' } }
-
   _codeReader = new ZXing.BrowserMultiFormatReader()
   _canvas = document.createElement('canvas')
   _context = this._canvas.getContext('2d')
   _img = document.createElement('img')
 
+  _clientWidth = 0
+  _clientHeight = 0
+  _videoMinSize = 0
+  _videoConstraints = {
+    video: {
+      facingMode: 'environment',
+      width: { min: this._videoMinSize },
+      height: { min: this._videoMinSize }
+    }
+  }
+
   _resizeTimeout = null
   _decodeTimeout = null
-  _decodeInterval = 1000
+  _decodeInterval = 300
   _diffHeight = 0
   _diffWidth = 0
   _constraintTop = 0
@@ -54,6 +63,7 @@ oom.define('q3s-code-scanner', class Q3SCodeScanner extends HTMLElement {
   }
 
   connectedCallback() {
+    this._resize()
     this.startVideo()
     window.addEventListener('resize', this._onResize, false)
   }
@@ -71,41 +81,43 @@ oom.define('q3s-code-scanner', class Q3SCodeScanner extends HTMLElement {
     if (!this._resizeTimeout) {
       this._resizeTimeout = setTimeout(() => {
         this._resizeTimeout = null
-        this.alignmentVideo()
+        this._resize()
       }, 100)
     }
   }
 
-  startVideo() {
-    try {
-      navigator.mediaDevices.getUserMedia(this._videoConstraints)
-        .then(stream => {
-          [this._videoTrack] = stream.getTracks()
-          this._stream = stream
-          if (this.isConnected) {
-            if ('height' in this._videoConstraints.video) {
-              this._startVideo()
-            } else {
-              const { height: { max: ih }, width: { max: iw } } = this._videoTrack.getCapabilities()
-
-              this._videoTrack.stop()
-              Object.assign(this._videoConstraints.video, { height: { ideal: ih }, width: { ideal: iw } })
-              navigator.mediaDevices.getUserMedia(this._videoConstraints)
-                .then(stream => {
-                  [this._videoTrack] = stream.getTracks()
-                  this._stream = stream
-                  this._startVideo()
-                })
-                .catch(error => this.videoCameraError(error))
-            }
-          } else {
-            this.stopVideo()
-          }
-        })
-        .catch(error => this.videoCameraError(error))
-    } catch (error) {
-      this.videoCameraError(error)
+  _resize() {
+    if (this._videoContainerElm) {
+      this._clientWidth = this._videoContainerElm.clientWidth
+      this._clientHeight = this._videoContainerElm.clientHeight
+      this._videoMinSize = Math.max(this._clientWidth, this._clientHeight)
+      if (this._videoConstraints.video.width.min !== this._videoMinSize) {
+        this._videoConstraints.video.width.min = 1920
+        this._videoConstraints.video.height.min = 1080
+        //   this._videoMinSize
+        if (this._videoTrack) {
+          this._videoTrack.applyConstraints(this._videoConstraints.video)
+            .then(() => this.alignmentVideo())
+            .catch(error => this.videoCameraError(error))
+        }
+      } else {
+        this.alignmentVideo()
+      }
     }
+  }
+
+  startVideo() {
+    this._getVideoDevice()
+      .then(() => this._startVideo())
+      .catch(error => this.videoCameraError(error))
+  }
+
+  async _getVideoDevice() {
+    const stream = await navigator.mediaDevices.getUserMedia(this._videoConstraints)
+    const [videoTrack] = stream.getTracks()
+
+    this._stream = stream
+    this._videoTrack = videoTrack
   }
 
   _startVideo() {
@@ -124,39 +136,45 @@ oom.define('q3s-code-scanner', class Q3SCodeScanner extends HTMLElement {
   }
 
   alignmentVideo() {
-    const { clientHeight: chvc, clientWidth: cwvc } = this._videoContainerElm
-    const { clientHeight: chv, clientWidth: cwv } = this._videoElm
-    const { height: rh, width: rw } = this._videoTrack.getSettings()
-    const diffHeight = (chv - chvc) / 2 ^ 0
-    const diffWidth = (cwv - cwvc) / 2 ^ 0
-    const ratioHeight = rh / chv
-    const ratioWidth = rw / cwv
+    if (this._videoTrack) {
+      const { clientHeight: chvc, clientWidth: cwvc } = this._videoContainerElm
+      const { clientHeight: chv, clientWidth: cwv } = this._videoElm
+      const { height: rh, width: rw } = this._videoTrack.getSettings()
+      const diffHeight = (chv - chvc) / 2 ^ 0
+      const diffWidth = (cwv - cwvc) / 2 ^ 0
+      const ratioHeight = rh / chv
+      const ratioWidth = rw / cwv
 
-    if (diffHeight > 0) {
-      this._diffHeight = diffHeight
-      this._videoElm.style.marginTop = `-${diffHeight}px`
-    } else {
-      this._diffHeight = 0
-      this._videoElm.style.marginTop = ''
+      if (diffHeight > 0) {
+        this._diffHeight = diffHeight
+        this._videoElm.style.marginTop = `-${diffHeight}px`
+      } else {
+        this._diffHeight = 0
+        this._videoElm.style.marginTop = ''
+      }
+      if (diffWidth > 0) {
+        this._diffWidth = diffWidth
+        this._videoElm.style.marginLeft = `-${diffWidth}px`
+      } else {
+        this._diffWidth = 0
+        this._videoElm.style.marginLeft = ''
+      }
+
+      this._constraintTop = this._constraintBGElm.clientHeight
+      this._constraintLeft = this._constraintBGElm.clientWidth
+
+      this._constraintHeight = this._captureAreaElm.clientHeight * ratioHeight ^ 0
+      this._constraintWidth = this._captureAreaElm.clientWidth * ratioWidth ^ 0
+      this._offsetTop = (this._diffHeight + this._constraintTop) * ratioHeight ^ 0
+      this._offsetLeft = (this._diffWidth + this._constraintLeft) * ratioWidth ^ 0
+
+      this._canvas.height = this._constraintHeight
+      this._canvas.width = this._constraintWidth
+
+      this.testResultElm.innerHTML = `SCREEN=${this._clientWidth}X${this._clientHeight}\n` +
+        `CAM=${rw}X${rh}\nVIDOE=${cwv}X${chv}\n` +
+        `OFFSET=${this._offsetTop}X${this._offsetLeft}`
     }
-    if (diffWidth > 0) {
-      this._diffWidth = diffWidth
-      this._videoElm.style.marginLeft = `-${diffWidth}px`
-    } else {
-      this._diffWidth = 0
-      this._videoElm.style.marginLeft = ''
-    }
-
-    this._constraintTop = this._constraintBGElm.clientHeight
-    this._constraintLeft = this._constraintBGElm.clientWidth
-
-    this._constraintHeight = this._captureAreaElm.clientHeight * ratioHeight ^ 0
-    this._constraintWidth = this._captureAreaElm.clientWidth * ratioWidth ^ 0
-    this._offsetTop = (this._diffHeight + this._constraintTop) * ratioHeight ^ 0
-    this._offsetLeft = (this._diffWidth + this._constraintLeft) * ratioWidth ^ 0
-
-    this._canvas.height = this._constraintHeight
-    this._canvas.width = this._constraintWidth
   }
 
   decodeFromVideo() {
@@ -204,7 +222,11 @@ oom.define('q3s-code-scanner', class Q3SCodeScanner extends HTMLElement {
     if (this._videoTrack) {
       this._videoTrack.stop()
       this._videoTrack = null
+    }
+    if (this._videoElm) {
       this._videoElm.srcObject = null
+      this._videoElm.style.marginTop = ''
+      this._videoElm.style.marginLeft = ''
     }
     this._codeReader.reset()
     window.dispatchEvent(new Event('q3s-code-scanner:stopVideo'))
@@ -225,7 +247,10 @@ oom.define('q3s-code-scanner', class Q3SCodeScanner extends HTMLElement {
           .span({ class: 'mdc-button__label' }, 'Подробнее...')), elm => { this._moreErrBtn = elm })
 
     this.stopVideo()
+    window.removeEventListener('resize', this._onResize)
 
+    this._videoContainerElm = null
+    this._videoElm = null
     this.innerHTML = ''
     this.append(content.dom)
 
