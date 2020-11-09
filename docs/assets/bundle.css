@@ -77,6 +77,8 @@ q3s-code-scanner {
   right: 0;
   bottom: 0;
   top: 0;
+  height: 100%;
+  width: 100%;
   overflow: hidden;
 }
 
@@ -92,6 +94,8 @@ q3s-code-scanner {
   right: 0;
   bottom: 0;
   top: 0;
+  height: 100%;
+  width: 100%;
   display: grid;
   grid-template-columns: 1fr 60vmin 1fr;
   grid-template-rows: 35vmin 60vmin 1fr;
