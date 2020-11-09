@@ -29,7 +29,7 @@ oom.define('q3s-code-scanner', class Q3SCodeScanner extends HTMLElement {
   template = () => oom
     .div({ class: 'q3s-code-scanner__video-container' },
       oom
-        .video({ class: 'q3s-code-scanner__video' },
+        .video({ class: 'q3s-code-scanner__video', autoplay: 'true', muted: 'true', playsinline: 'true' },
           elm => { this._videoElm = elm }
         ),
       elm => { this._videoContainerElm = elm }
