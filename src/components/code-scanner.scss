@@ -28,8 +28,14 @@ q3s-code-scanner {
   bottom: 0;
   top: 0;
   display: grid;
-  grid-template-columns: 1fr calc(100vmin - 12rem) 1fr;
-  grid-template-rows: 8rem calc(100vmin - 12rem) 1fr;
+  grid-template-columns: 1fr 60vmin 1fr;
+  grid-template-rows: 35vmin 60vmin 1fr;
+}
+
+@media (orientation: landscape) {
+  .q3s-code-scanner__capture-area-container {
+    grid-template-rows: calc(48px + 1.5rem) 60vmin 1fr;
+  }
 }
 
 .q3s-code-scanner__capture-area-constraint-bg {
