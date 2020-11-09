@@ -81,15 +81,23 @@ oom.define('q3s-code-scanner', class Q3SCodeScanner extends HTMLElement {
       navigator.mediaDevices.getUserMedia(this._videoConstraints)
         .then(stream => {
           [this._videoTrack] = stream.getTracks()
+          this._stream = stream
           if (this.isConnected) {
-            this._videoElm.srcObject = stream
-            this._videoElm.play()
-            this._videoElm.addEventListener('canplay', (self => function _handler(e) {
-              e.currentTarget.removeEventListener('canplay', _handler)
-              self.alignmentVideo()
-              window.dispatchEvent(new Event('q3s-code-scanner:startVideo'))
-              self.decodeFromVideo()
-            })(this))
+            if ('height' in this._videoConstraints.video) {
+              this._startVideo()
+            } else {
+              const { height: { max: ih }, width: { max: iw } } = this._videoTrack.getCapabilities()
+
+              this._videoTrack.stop()
+              Object.assign(this._videoConstraints.video, { height: { ideal: ih }, width: { ideal: iw } })
+              navigator.mediaDevices.getUserMedia(this._videoConstraints)
+                .then(stream => {
+                  [this._videoTrack] = stream.getTracks()
+                  this._stream = stream
+                  this._startVideo()
+                })
+                .catch(error => this.videoCameraError(error))
+            }
           } else {
             this.stopVideo()
           }
@@ -97,6 +105,21 @@ oom.define('q3s-code-scanner', class Q3SCodeScanner extends HTMLElement {
         .catch(error => this.videoCameraError(error))
     } catch (error) {
       this.videoCameraError(error)
+    }
+  }
+
+  _startVideo() {
+    if (this.isConnected) {
+      this._videoElm.srcObject = this._stream
+      this._videoElm.play()
+      this._videoElm.addEventListener('canplay', (self => function _handler(e) {
+        e.currentTarget.removeEventListener('canplay', _handler)
+        self.alignmentVideo()
+        window.dispatchEvent(new Event('q3s-code-scanner:startVideo'))
+        self.decodeFromVideo()
+      })(this))
+    } else {
+      this.stopVideo()
     }
   }
 
