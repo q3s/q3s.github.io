@@ -210,7 +210,17 @@ oom.define('q3s-code-scanner', class Q3SCodeScanner extends HTMLElement {
     video: {
       facingMode: 'environment',
       width: { min: this._videoMinSize },
-      height: { min: this._videoMinSize }
+      height: { min: this._videoMinSize },
+      advanced: [
+        { width: { min: 4096 }, height: { min: 2160 } },
+        { width: { min: 3840 }, height: { min: 2160 } },
+        { width: { min: 3200 }, height: { min: 2400 } },
+        { width: { min: 1920 }, height: { min: 1080 } },
+        { width: { min: 1280 }, height: { min: 720 } },
+        { width: { min: 1024 }, height: { min: 768 } },
+        { width: { min: 720 }, height: { min: 480 } },
+        { width: { min: 640 }, height: { min: 480 } }
+      ]
     }
   }
   _resizeTimeout = null
@@ -266,7 +276,7 @@ oom.define('q3s-code-scanner', class Q3SCodeScanner extends HTMLElement {
     if (!this._resizeTimeout) {
       this._resizeTimeout = setTimeout(() => {
         this._resizeTimeout = null;
-        this._resize();
+        this.alignmentVideo();
       }, 100);
     }
   }
