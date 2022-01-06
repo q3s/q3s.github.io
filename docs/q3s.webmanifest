@@ -1,8 +1,14 @@
 ---
 ---
-{% capture build_number %}{{ site.github.build_revision }}{{ site.time | date: '%Y%m%d%H%M%S' }}{% endcapture %}
+{%- capture build_number -%}
+  {{ site.github.build_revision }}{{ site.time | date: '%Y%m%d%H%M%S' }}
+{%- endcapture -%}
 {
+{%- if site.github.repository_name == "q3s.github.io" %}
   "name": "QR Share",
+{%- else %}
+  "name": "QR Share (DEV)",
+{%- endif %}
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

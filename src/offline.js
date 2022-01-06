@@ -29,6 +29,8 @@ self.addEventListener('activate', (event) => {
 
           return caches.delete(key)
         }
+
+        return true
       }))
 
       if (isUpdate) {

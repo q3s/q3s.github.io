@@ -2,8 +2,9 @@ import { Test, assert } from '@nodutilus/test'
 import {
   testURLChars,
   decodeURISearch,
-  deflateJSONURL,
-  inflateJSONURL
+  deflate,
+  inflate,
+  parseURL
 } from '../../lib/dataurl.js'
 
 
@@ -49,11 +50,28 @@ export class Tdataurl extends Test {
     assert.equal(eURI, 'http://q3s.github.io/#a=q3s.github.io/%D0%B0%D0%BF%D0%B8:?/-_.,;@+$!~*\'()')
   }
 
-  ['deflateJSONURL']() {
-    const a = deflateJSONURL({ a: true })
-    const b = inflateJSONURL(a)
+  ['deflate/inflate']() {
+    let a = deflate(JSON.stringify({ a: true }))
+    let b = JSON.parse(inflate(a))
 
     assert.deepEqual(b, { a: true })
+
+    a = deflate(JSON.stringify({ a: 'q3s.github.io/api/' }))
+    b = JSON.parse(inflate(a))
+
+    assert.deepEqual(b, { a: 'q3s.github.io/api/' })
+  }
+
+  ['parseURL']() {
+    const { URL } = window
+    const url1 = new URL('http://q3s.github.io/#' + new URLSearchParams('a=q3s.github.io/api/'))
+    const d1 = parseURL(url1.href)
+    const url2 = new URL(`http://q3s.github.io/#${deflate(JSON.stringify({ a: 'q3s.github.io/api/' }))}`)
+    const d2 = parseURL(url2.href)
+
+    assert.deepEqual(d1, { a: 'q3s.github.io/api/' })
+    assert.equal(url2.href, 'http://q3s.github.io/#GRpalb9iazgKRALfbcAEjtbbPdtfbczklWE5')
+    assert.deepEqual(d2, { a: 'q3s.github.io/api/' })
   }
 
 }

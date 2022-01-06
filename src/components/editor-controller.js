@@ -43,7 +43,7 @@ oom.define('q3s-editor-controller', class Q3SEditorController extends HTMLElemen
   connectedCallback() {
     const select = new MDCSelect(this._typeSelect)
 
-    console.log(this._typeSelect)
+    console.log(select, this._typeSelect)
   }
 
 })

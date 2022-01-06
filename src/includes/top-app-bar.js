@@ -1,10 +1,13 @@
 import { MDCTopAppBar } from '@material/top-app-bar'
 import { q3sDrawer } from './navigation-drawer.js'
 
-const { location, history } = window
+const { document, location, history } = window
 const q3sTopAppBarElm = document.querySelector('.q3s-top-app-bar')
 const q3sTopAppBar = MDCTopAppBar.attachTo(q3sTopAppBarElm)
+const basicTitle = location.hostname === 'q3s.github.io' ? 'QR Share' : 'QR Share (DEV)'
 
+
+document.title = basicTitle
 
 q3sTopAppBar.setScrollTarget(document.querySelector('.q3s-main-content'))
 q3sTopAppBar.listen('MDCTopAppBar:nav', () => {

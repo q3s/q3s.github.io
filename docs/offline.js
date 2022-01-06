@@ -29,6 +29,7 @@ self.addEventListener('activate', (event) => {
           isUpdate = true;
           return caches.delete(key)
         }
+        return true
       }));
       if (isUpdate) {
         await self.clients.matchAll().then((clients) => {
