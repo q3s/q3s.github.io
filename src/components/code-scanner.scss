@@ -48,6 +48,8 @@ q3s-code-scanner {
 
 .q3s-code-scanner__capture-area {
   border: rgba($color: theme.$on-primary, $alpha: variables.$videocam-opacity) 1px solid;
+  background-repeat: no-repeat;
+  background-size: contain;
 }
 
 .q3s-code-scanner__card-content {

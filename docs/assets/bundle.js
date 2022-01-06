@@ -150,10 +150,12 @@ window.addEventListener('MDCDrawer:closed', () => {
   }
 });
 
-const { location: location$3, history } = window;
-const q3sTopAppBarElm = document.querySelector('.q3s-top-app-bar');
+const { document: document$2, location: location$3, history } = window;
+const q3sTopAppBarElm = document$2.querySelector('.q3s-top-app-bar');
 const q3sTopAppBar = MDCTopAppBar.attachTo(q3sTopAppBarElm);
-q3sTopAppBar.setScrollTarget(document.querySelector('.q3s-main-content'));
+const basicTitle = location$3.hostname === 'q3s.github.io' ? 'QR Share' : 'QR Share (DEV)';
+document$2.title = basicTitle;
+q3sTopAppBar.setScrollTarget(document$2.querySelector('.q3s-main-content'));
 q3sTopAppBar.listen('MDCTopAppBar:nav', () => {
   q3sDrawer.open = !q3sDrawer.open;
 });
@@ -191,49 +193,32 @@ window.addEventListener('q3s-code-scanner:stopVideo', () => {
 const buttons = [...document.querySelectorAll('.q3s-code-scanner__button')];
 buttons.map(item => MDCRipple.attachTo(item));
 window.addEventListener('q3s-code-scanner:startVideo', () => {
-  buttons.map(item => { item.classList.add('q3s-secondary-bg-opacity'); });
+  buttons.map(item => item.classList.add('q3s-secondary-bg-opacity'));
 }, false);
 window.addEventListener('q3s-code-scanner:stopVideo', () => {
-  buttons.map(item => { item.classList.remove('q3s-secondary-bg-opacity'); });
+  buttons.map(item => item.classList.remove('q3s-secondary-bg-opacity'));
 }, false);
 
-const { document: document$2, navigator: navigator$1 } = window;
+const { screen: screen$1, document: document$3, navigator: navigator$1 } = window;
 oom.define('q3s-code-scanner', class Q3SCodeScanner extends HTMLElement {
-  _codeReader = new ZXing.BrowserMultiFormatReader()
-  _canvas = document$2.createElement('canvas')
+  _codeReader = new ZXing.BrowserQRCodeReader()
+  _canvas = document$3.createElement('canvas')
   _context = this._canvas.getContext('2d')
-  _img = document$2.createElement('img')
-  _clientWidth = 0
-  _clientHeight = 0
-  _videoMinSize = 0
   _videoConstraints = {
     video: {
       facingMode: 'environment',
-      width: { min: this._videoMinSize },
-      height: { min: this._videoMinSize },
+      width: { min: 0 },
+      height: { min: 0 },
       advanced: [
-        { width: { min: 4096 }, height: { min: 2160 } },
-        { width: { min: 3840 }, height: { min: 2160 } },
-        { width: { min: 3200 }, height: { min: 2400 } },
-        { width: { min: 1920 }, height: { min: 1080 } },
-        { width: { min: 1280 }, height: { min: 720 } },
-        { width: { min: 1024 }, height: { min: 768 } },
-        { width: { min: 720 }, height: { min: 480 } },
-        { width: { min: 640 }, height: { min: 480 } }
       ]
     }
   }
+  _sourceCapture = [0, 0, 0, 0]
+  _destinationCapture = [0, 0, 0, 0]
+  _currentScale = 1
   _resizeTimeout = null
   _decodeTimeout = null
-  _decodeInterval = 300
-  _diffHeight = 0
-  _diffWidth = 0
-  _constraintTop = 0
-  _constraintLeft = 0
-  _offsetTop = 0
-  _offsetLeft = 0
-  _constraintHeight = 0
-  _constraintWidth = 0
+  _decodeInterval = 100
   template = () => oom
     .div({ class: 'q3s-code-scanner__video-container' },
       oom
@@ -260,7 +245,7 @@ oom.define('q3s-code-scanner', class Q3SCodeScanner extends HTMLElement {
     this._onResize = () => this.resizeEven();
   }
   connectedCallback() {
-    this._resize();
+    this._prepareConstraints();
     this.startVideo();
     window.addEventListener('resize', this._onResize, false);
   }
@@ -272,30 +257,21 @@ oom.define('q3s-code-scanner', class Q3SCodeScanner extends HTMLElement {
       delete this._moreErrBtn.onclick;
     }
   }
+  _prepareConstraints() {
+    const { advanced } = this._videoConstraints.video;
+    const { height } = screen$1;
+    advanced.push({ height: { min: height * 1.5 } });
+    advanced.push({ height: { min: height } });
+    advanced.push({ height: { min: height / 1.5 } });
+    advanced.push({ height: { min: height / 2 } });
+    advanced.push({ height: { min: 0 } });
+  }
   resizeEven() {
     if (!this._resizeTimeout) {
       this._resizeTimeout = setTimeout(() => {
         this._resizeTimeout = null;
         this.alignmentVideo();
-      }, 100);
-    }
-  }
-  _resize() {
-    if (this._videoContainerElm) {
-      this._clientWidth = this._videoContainerElm.clientWidth;
-      this._clientHeight = this._videoContainerElm.clientHeight;
-      this._videoMinSize = Math.max(this._clientWidth, this._clientHeight);
-      if (this._videoConstraints.video.width.min !== this._videoMinSize) {
-        this._videoConstraints.video.width.min = 1920;
-        this._videoConstraints.video.height.min = 1080;
-        if (this._videoTrack) {
-          this._videoTrack.applyConstraints(this._videoConstraints.video)
-            .then(() => this.alignmentVideo())
-            .catch(error => this.videoCameraError(error));
-        }
-      } else {
-        this.alignmentVideo();
-      }
+      }, this._decodeInterval);
     }
   }
   startVideo() {
@@ -305,7 +281,7 @@ oom.define('q3s-code-scanner', class Q3SCodeScanner extends HTMLElement {
   }
   async _getVideoDevice() {
     const stream = await navigator$1.mediaDevices.getUserMedia(this._videoConstraints);
-    const [videoTrack] = stream.getTracks();
+    const [videoTrack] = stream.getVideoTracks();
     this._stream = stream;
     this._videoTrack = videoTrack;
   }
@@ -317,7 +293,7 @@ oom.define('q3s-code-scanner', class Q3SCodeScanner extends HTMLElement {
         e.currentTarget.removeEventListener('canplay', _handler);
         self.alignmentVideo();
         window.dispatchEvent(new Event('q3s-code-scanner:startVideo'));
-        self.decodeFromVideo();
+        self.decodeFromCanvasFrame();
       })(this));
     } else {
       this.stopVideo();
@@ -325,72 +301,84 @@ oom.define('q3s-code-scanner', class Q3SCodeScanner extends HTMLElement {
   }
   alignmentVideo() {
     if (this._videoTrack) {
-      const { clientHeight: chvc, clientWidth: cwvc } = this._videoContainerElm;
-      const { clientHeight: chv, clientWidth: cwv } = this._videoElm;
-      const { height: rh, width: rw } = this._videoTrack.getSettings();
-      const diffHeight = (chv - chvc) / 2 ^ 0;
-      const diffWidth = (cwv - cwvc) / 2 ^ 0;
-      const ratioHeight = rh / chv;
-      const ratioWidth = rw / cwv;
-      if (diffHeight > 0) {
-        this._diffHeight = diffHeight;
-        this._videoElm.style.marginTop = `-${diffHeight}px`;
+      const { clientWidth: cwvc, clientHeight: chvc } = this._videoContainerElm;
+      const { width: rw, height: rh } = this._videoTrack.getSettings();
+      const diffW = rw / cwvc;
+      const diffH = rh / chvc;
+      if (diffW < diffH) {
+        this._videoElm.style.width = '100%';
+        this._videoElm.style.height = '';
+        this._currentScale = diffW;
       } else {
-        this._diffHeight = 0;
-        this._videoElm.style.marginTop = '';
+        this._videoElm.style.width = '';
+        this._videoElm.style.height = '100%';
+        this._currentScale = diffH;
       }
+      const { clientWidth: cwv, clientHeight: chv } = this._videoElm;
+      let diffWidth = (cwv - cwvc) / 2 ^ 0;
+      let diffHeight = (chv - chvc) / 2 ^ 0;
       if (diffWidth > 0) {
-        this._diffWidth = diffWidth;
         this._videoElm.style.marginLeft = `-${diffWidth}px`;
       } else {
-        this._diffWidth = 0;
+        diffWidth = 0;
         this._videoElm.style.marginLeft = '';
       }
-      this._constraintTop = this._constraintBGElm.clientHeight;
-      this._constraintLeft = this._constraintBGElm.clientWidth;
-      this._constraintHeight = this._captureAreaElm.clientHeight * ratioHeight ^ 0;
-      this._constraintWidth = this._captureAreaElm.clientWidth * ratioWidth ^ 0;
-      this._offsetTop = (this._diffHeight + this._constraintTop) * ratioHeight ^ 0;
-      this._offsetLeft = (this._diffWidth + this._constraintLeft) * ratioWidth ^ 0;
-      this._canvas.height = this._constraintHeight;
-      this._canvas.width = this._constraintWidth;
-      this.testResultElm.innerHTML = `SCREEN=${this._clientWidth}X${this._clientHeight}\n` +
+      if (diffHeight > 0) {
+        this._videoElm.style.marginTop = `-${diffHeight}px`;
+      } else {
+        diffHeight = 0;
+        this._videoElm.style.marginTop = '';
+      }
+      const captureWidth = this._captureAreaElm.clientWidth * this._currentScale ^ 0;
+      const captureHeight = this._captureAreaElm.clientHeight * this._currentScale ^ 0;
+      this._sourceCapture = [
+        (this._constraintBGElm.clientWidth + diffWidth) * this._currentScale ^ 0,
+        (this._constraintBGElm.clientHeight + diffHeight) * this._currentScale ^ 0,
+        captureWidth,
+        captureHeight
+      ];
+      this._destinationCapture = [0, 0, captureWidth, captureHeight];
+      this._canvas.width = captureWidth;
+      this._canvas.height = captureHeight;
+      this.testResultElm.innerHTML = `CONTAINER=${cwvc}X${chvc}\n` +
+        `SCREEN=${window.screen.width}X${window.screen.height}\n` +
         `CAM=${rw}X${rh}\nVIDOE=${cwv}X${chv}\n` +
-        `OFFSET=${this._offsetTop}X${this._offsetLeft}`;
+        `S=${JSON.stringify(this._sourceCapture)}\n` +
+        `D=${JSON.stringify(this._destinationCapture)}`;
     }
   }
-  decodeFromVideo() {
+  decodeFromCanvasFrame() {
     if (this._decodeTimeout) {
       clearTimeout(this._decodeTimeout);
     }
-    this._decodeTimeout = setTimeout(() => this._decodeFromVideo(), this._decodeInterval);
+    this._decodeTimeout = setTimeout(() => {
+      window.requestAnimationFrame(() => {
+        this._decodeFromCanvasFrame();
+      });
+    }, this._decodeInterval);
   }
-  _decodeFromVideo() {
-    if (this._videoTrack && this._videoElm) {
+  _decodeFromCanvasFrame() {
+    if (this._videoTrack) {
       this._context.drawImage(this._videoElm,
-        this._offsetLeft,
-        this._offsetTop,
-        this._constraintWidth,
-        this._constraintHeight,
-        0, 0,
-        this._constraintWidth,
-        this._constraintHeight
+        ...this._sourceCapture,
+        ...this._destinationCapture
       );
-      this._img.src = this._canvas.toDataURL('image/png');
-      this._codeReader.decodeFromImage(this._img)
-        .then(result => {
-          this.testResultElm.innerHTML = result;
-          this.decodeFromVideo();
-        })
-        .catch(error => {
-          if (error instanceof ZXing.NotFoundException) {
-            this.decodeFromVideo();
-          } else {
-            this.videoCameraError(error);
-          }
-        }).then(() => {
-          this._codeReader.reset();
-        });
+      try {
+        const luminanceSource = new ZXing.HTMLCanvasElementLuminanceSource(this._canvas);
+        const hybridBinarizer = new ZXing.HybridBinarizer(luminanceSource);
+        const result = this._codeReader.decodeBitmap(hybridBinarizer);
+        this.testResultElm.innerHTML = result;
+        this.decodeFromCanvasFrame();
+      } catch (error) {
+        const ifNotFound = error instanceof ZXing.NotFoundException;
+        const isChecksumOrFormatError = error instanceof ZXing.ChecksumException ||
+          error instanceof ZXing.FormatException;
+        if (ifNotFound || isChecksumOrFormatError) {
+          this.decodeFromCanvasFrame();
+        } else {
+          this.videoCameraError(error);
+        }
+      }
     } else {
       this.stopVideo();
     }
@@ -511,7 +499,7 @@ oom.define('q3s-editor-controller', class Q3SEditorController extends HTMLElemen
       )), select => { this._typeSelect = select; })
   connectedCallback() {
     const select = new MDCSelect(this._typeSelect);
-    console.log(this._typeSelect);
+    console.log(select, this._typeSelect);
   }
 });
 

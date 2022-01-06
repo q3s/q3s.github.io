@@ -20,7 +20,7 @@
     "rollup-plugin-cleanup": "latest",
     "rollup-plugin-postcss": "latest",
     "sass": "latest",
-    "pako": "^1.0.11",
+    "pako": "^2.0.2",
     "qrcode": "^1.4.4",
     "@zxing/library": "^0.18.3",
     "dexie": "^3.0.2",
