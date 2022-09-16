@@ -17,6 +17,11 @@
       "src": "/assets/png/favicon128.png?v={{ build_number }}",
       "type": "image/png",
       "sizes": "128x128"
+    },
+    {
+      "src": "/assets/png/favicon256.png?v={{ build_number }}",
+      "type": "image/png",
+      "sizes": "256x256"
     }
   ]
 }
