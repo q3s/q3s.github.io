@@ -4,19 +4,19 @@
 import { oom, ZXing, pako, QRCode, Dexie } from './external.js?v={{ build_number }}';
 import { MDCDrawer, MDCTopAppBar, MDCRipple, MDCSelect } from './mdc.js?v={{ build_number }}';
 
-const { navigator, location } = window;
-if ('serviceWorker' in navigator) {
-  (async () => {
-    const { serviceWorker } = navigator;
-    await serviceWorker.register('/offline.js', { scope: '/' });
-    serviceWorker.addEventListener('message', event => {
-      if (event.data === 'force-refresh') {
-        location.reload();
-      }
-    });
-    console.log('serviceWorker succeeded: v={{ build_number }}');
-  })().catch(console.error);
-}
+// const { navigator, location } = window;
+// if ('serviceWorker' in navigator) {
+//   (async () => {
+//     const { serviceWorker } = navigator;
+//     await serviceWorker.register('/offline.js', { scope: '/' });
+//     serviceWorker.addEventListener('message', event => {
+//       if (event.data === 'force-refresh') {
+//         location.reload();
+//       }
+//     });
+//     console.log('serviceWorker succeeded: v={{ build_number }}');
+//   })().catch(console.error);
+// }
 
 const { location: location$1 } = window;
 oom.define('q3s-navigation-router', class Q3SNavigationRouter extends HTMLElement {
